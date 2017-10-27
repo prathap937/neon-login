@@ -52,6 +52,10 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     width: 100%;
     margin-bottom: 15px;
   }
+  .img.below{
+    width: 130px;
+    margin: 0 auto;
+  }
 </style>
 
       <div id="hexagon-icon">
@@ -81,12 +85,12 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     let href=this.getAttribute('href');
 
     if(iconImage && iconImage.length > 2){
-      this.shadowRoot.querySelector('.img img').src=iconImage;
+      this.shadowRoot.querySelector('.img').innerHTML=iconImage;
     }else{
       this.shadowRoot.querySelector('.img img').src="SVG/hexagon-icon.svg";
     }
     if(iconLogoImage && iconLogoImage.length > 2){
-      this.shadowRoot.querySelector('.icon-img img').src=iconLogoImage;
+      this.shadowRoot.querySelector('.icon-img').innerHTML=iconLogoImage;
     }
     if(title && title.length > 0){
       this.shadowRoot.querySelector('.title').innerHTML=title;
