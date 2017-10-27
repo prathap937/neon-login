@@ -1,0 +1,52 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-selector/test/content.html">
+
+<dom-module id="hexagon-content">
+  <link rel="import" type="css" href="hexagon-content.css">
+  <template>
+    <div class="hex">
+      <div class="hexData">
+        <p>11</p>
+        <content></content>
+      </div>
+    </div>
+
+  </template>
+  <!-- <script src="hexagon-content.js"></script> -->
+  <script type="text/javascript">
+    class HexagonContent extends Polymer.Element {
+      static get is() {
+        return 'hexagon-content';
+      }
+
+      static get properties() {
+        return {
+          canvasBaseUri: {
+            type: String
+          }
+        }
+      }
+
+      handleVersion: function(r) {
+    this.set('version', r.detail.response.buildVersion);
+  },
+  attached: function() {
+    var me = this;
+    me.set('canvasBaseUri', app.canvasContext);
+  }
+  canvasLogin: function() {
+    var me = this;
+    me.$.canvasLogin.body = 'username=admin@cboard.com&password=password';
+    me.$.canvasLogin.generateRequest();
+  }
+  canvasLoginSuccess: function() {
+    console.log('Report auth successful!');
+  }
+  canvasLoginError: function() {
+    console.log('Report auth failed!');
+  }
+
+  }
+    customElements.define('hexagon-content', HexagonContent);
+  </script>
+</dom-module>

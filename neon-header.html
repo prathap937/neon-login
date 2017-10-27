@@ -1,0 +1,144 @@
+
+<script>
+customElements.define('neon-header', class extends HTMLElement{
+  constructor(){
+    super();
+  
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        header.menu-header {
+          background: #00000095;
+          height: 80px;
+          width: 100%;
+        }
+        .flex-container{
+          display: inline-flex;
+          flex-wrap:nowrap;
+        }
+        .flex-box{
+
+        }
+        .logo {
+          width: 135px;
+        }
+        .logo img{
+          height: 80px;
+        }
+        .metric {
+          text-align: right;
+          flex: 5;
+          align-self: center;
+          position: relative;
+        }  
+        select.profile:focus{
+          outline: none;
+        }
+        select.profile{
+          width: 300px;
+          font-size: 1.2em;
+          background: #0000;
+          border: none;
+          color: #fff;
+          cursor: pointer;
+        }
+        select.profile option{
+          color:#000;
+          padding: 10px 0;
+        }
+        .metric::after {
+          content: ' ';
+          background-image: url(SVG/dropdown.svg);
+          width: 25px;
+          height: 25px;
+          position: absolute;
+          top: -1px;
+          right: -4px;
+          background-size: 25px;
+        }
+        .time {
+          width: 130px;
+          text-align: center;
+          align-self: center;
+          color: #fff;
+        }
+        .time > span {
+          padding: 5px 20px;
+          border-right: 2px dashed #fff;
+          border-left: 2px dashed #fff;
+        }
+        .notification {
+          width: 50px;
+          text-align: center;
+          align-self: center;
+        }
+        .user-options {
+          min-width: 160px;
+          text-align: right;
+          align-self: center;
+          color: #fff;
+        }
+        .user-name {
+          position: relative;
+        }
+        .user-name > span{
+          padding-right: 35px;
+        }
+        .user-name .drop-down{
+          top: -4px;
+          position: absolute;
+          right: 0;
+        }
+      </style>
+
+      <div id="neon-header">
+        <header class="menu-header flex-container">
+            <div class="logo">
+              <a href="/index.html">
+              <img src="../SVG/flytxt-logo.png" alt="logo">
+              </a>
+            </div>
+            <div class="metric flex-box">
+              <select class="profile">
+                <option>System Global</option>
+                <option>System Global</option>
+                <option>System Global</option>
+              </select>
+            </div>
+            <div class="time flex-box"><span>12.27pm<span></div>
+            
+            <div class="notification flex-box">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20"><g fill="#F13737"><path d="M8.8 19.495c.341.34.735.505 1.194.505.472 0 .861-.171 1.184-.505.322-.333.494-.724.494-1.183H8.307c0 .459.163.853.493 1.183zM19.936 16.766a13.614 13.614 0 0 1-1.774-3.703c-.399-1.303-.757-3.188-1.075-5.654-.186-1.435-.771-2.646-1.425-3.429a6.12 6.12 0 0 0-1.117-1.053 6.896 6.896 0 0 0-2.303-1.129 2.179 2.179 0 0 0-.798-1.282A2.256 2.256 0 0 0 9.994 0C9.458 0 8.977.176 8.56.515c-.417.34-.68.768-.789 1.282a6.889 6.889 0 0 0-2.314 1.129A6.161 6.161 0 0 0 4.34 3.979c-.647.777-1.228 1.994-1.414 3.428-.317 2.466-.685 4.35-1.084 5.653a13.904 13.904 0 0 1-1.764 3.705.596.596 0 0 0-.122.338c0 .102.022.188.077.287a.58.58 0 0 0 .538.316h18.871a.585.585 0 0 0 .537-.316.735.735 0 0 0 .065-.295c0-.12-.04-.225-.108-.329zm-18.269-.274A14.673 14.673 0 0 0 3.168 12.8c.344-1.327.658-3.081.964-5.238.266-1.876 1.117-3.054 2.181-3.759.754-.5 1.401-.763 2.157-.932a.583.583 0 0 0 .45-.581v-.021c0-.581.494-1.052 1.073-1.052.603 0 1.075.471 1.075 1.052v.021c0 .274.195.514.472.581.755.185 1.411.422 2.147.932.371.257.696.541.976.865.567.661 1.041 1.677 1.206 2.894.294 2.159.613 3.9.964 5.227s.854 2.564 1.513 3.704l-16.679-.001z"/></g></svg>
+            </div>
+            
+            <div class="user-options flex-box">
+              <div class="user-name">
+                <span>Naveen 
+                  <span class="drop-down">
+
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;width: 25px;" xml:space="preserve"><style type="text/css">.st0{fill:#657D89;}.st1{fill:#EF3A39;}.st2{fill:#1F2328;}.st3{fill:#C9C9C9;}.st4{fill:#010101;}.st5{fill:#59BA47;}.st6{fill:#F16464;}.st7{fill:#086699;}.st8{enable-background:new;}.st9{fill:#C9C9C9;enable-background:new;}.st10{fill:#62C195;}.st11{opacity:0;fill:#FFFFFF;}.st12{display:none;}.st13{display:inline;opacity:0.32;fill:#F05023;}</style><path class="st3" d="M18,8.75l-6,6.5l-6-6.5l1.51,0l4.49,0l4.49,0L18,8.75z"/><g><rect x="0" y="0" class="st11" width="24" height="24"/><rect x="0" y="0" class="st11" width="24" height="24"/><rect y="0" class="st11" width="24" height="24"/></g><g class="st12"><rect x="4" y="4" class="st13" width="16" height="16"/></g></svg>
+                  </span>
+                </span>
+                <ul style="display: none">
+                  <li>Change Password</li>
+                  <li>Edit Profile</li>
+                  <li>preferences</li>
+                  <li>Logout</li>
+                </ul>
+              </div>
+            </div>
+        </header>
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+  
+  connectedCallback(){
+    
+  }
+
+});
+
+</script>

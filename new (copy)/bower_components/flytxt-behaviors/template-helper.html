@@ -1,0 +1,130 @@
+<script>
+  var Flytxt = window.Flytxt = window.Flytxt || {};
+
+  /**
+   `Flytxt.TemplateHelper` adds a few helper functions for use within template bindings.
+   @polymerBehavior Flytxt.TemplateHelper
+   */
+
+  Flytxt.TemplateHelper = {
+
+    /**
+     * Returns true if arg1 = arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    eq: function(arg1, arg2) {
+      return arg1 === arg2;
+    },
+
+    /**
+     * Returns true if arg1 != arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    ne: function(arg1, arg2) {
+      return arg1 !== arg2;
+    },
+
+    /**
+     * Returns true if arg1 &lt; arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    lt: function(arg1, arg2) {
+      return arg1 < arg2;
+    },
+
+    /**
+     * Returns true if arg1 &lt;= arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    le: function(arg1, arg2) {
+      return arg1 <= arg2;
+    },
+
+    /**
+     * Returns true if arg1 &gt; arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    gt: function(arg1, arg2) {
+      return arg1 > arg2;
+    },
+
+    /**
+     * Returns true if arg1 &gt;= arg2.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    ge: function(arg1, arg2) {
+      return arg1 >= arg2;
+    },
+
+    /**
+     * Returns true if logical and; arg1 && arg2 = true.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    and: function(arg1, arg2) {
+      return arg1 && arg2;
+    },
+
+    /**
+     * Returns true if logical or; arg1 || arg2 = true.
+     *
+     * @param arg1
+     * @param arg2
+     */
+    or: function(arg1, arg2) {
+      return arg1 || arg2;
+    },
+
+    /**
+     * Returns true if arg1 is undefined or null.
+     *
+     * @param arg1
+     */
+    isNull: function(arg1) {
+      return typeof arg1 === 'undefined' || null === arg1;
+    },
+
+    /**
+     * If condition is true, returns success argument else returns failure argument.
+     * 
+     * @param condition
+     * @param success
+     * @param failure
+     */
+    elvis: function(condition, success, failure) {
+      return condition ? success : failure;
+    },
+
+    /**
+     * Returns true if value is equal to one of the remaining arguments.
+     * 
+     * @param value
+     */
+    hasValue: function(value) {
+      return -1 !== Array.prototype.slice.call(arguments, 1).indexOf(value);
+    },
+
+    /**
+     * Returns true if value is equal to one of the remaining arguments.
+     * 
+     * @param value
+     */
+    notContains: function(value) {
+      return -1 === Array.prototype.slice.call(arguments, 1).indexOf(value);
+    }
+
+  };
+</script>

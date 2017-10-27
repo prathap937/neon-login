@@ -1,0 +1,41 @@
+{
+  "name": "flytxt-oidc-login",
+  "version": "0.0.1",
+  "authors": [
+    "Mohamed Gazal <mohamed.gazal@flytxt.com>"
+  ],
+  "description": "An element to handle OpenID Connect Login using OpenAM.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "authentication",
+    "oidc",
+    "security"
+  ],
+  "main": "flytxt-oidc-login.html",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/",
+    "package.json",
+    "gulpfile.js",
+    "index.html"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "13ec935310a576b22e0de447f3950e82d3008e34"
+  },
+  "_source": "git@bitbucket.org:flytxt/flytxt-oidc-login.git",
+  "_target": "~0.0.1",
+  "_originalSource": "git@bitbucket.org:flytxt/flytxt-oidc-login.git"
+}

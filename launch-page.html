@@ -1,0 +1,88 @@
+<link rel="import" href="./hexagon-icon.html">
+<script>
+customElements.define('launch-page', class extends HTMLElement{
+  constructor(){
+    super();
+  
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        section.dash-content1 {
+          padding-bottom: 20px;
+          padding-top: 40px;
+        }
+        h2.page-head1 {
+          text-align: center;
+          color: #fff;
+          margin: 20px 15px 60px;
+          font-size: 2em;
+        }
+        .flex-container1{
+          display: flex;
+          width: 75%;
+          margin: 0 auto;
+        }
+        .flex-box1{
+          flex:1;
+        }
+        section.dash-content2 {
+          padding-top: 30px;
+          padding-bottom: 30px;
+        }
+        h2.page-head2 {
+          margin-top: 20px;
+          margin-bottom: 60px;
+          text-align: center;
+          color: #606161;
+          font-size: 2em;
+        }
+        .flex-container2{
+          display: flex;
+          width: 60%;
+          margin: 0 auto;
+        }
+        .flex-box2{
+          flex: 1;
+        }
+      </style>
+
+      <div class="launch-page">
+        <section class="dash-content1">
+          <h2 class="page-head1">NEON-dX Business Applications</h2>
+          <div class="business flex-container1">
+              <div class="flex-box1">
+                  <hexagon-icon href="https://www.google.co.in/?gfe_rd=cr&dcr=0&ei=xRjFWb-DIpPy8AeXgKaABg" icon-logo-image="SVG/pm.svg" icon-title="Precision<br>Maker" icon-desc="Enable real-time, relevant engagement with customers to maximize their life time value"></hexagon-icon>
+              </div>
+              <div class="flex-box1">
+                  <hexagon-icon icon-logo-image="SVG/im.svg" icon-title="Intent Management" icon-desc="Ensure consistent personalized customer experience across digital touchpoints"></hexagon-icon>
+              </div>
+              <div class="flex-box1">
+                  <hexagon-icon icon-logo-image="SVG/im.svg" icon-title="Insights Workbench" icon-desc="Access model templates and build analytical models"></hexagon-icon>
+              </div>
+          </div>
+        </section>
+        <section class="dash-content2">
+          <h2 class="page-head2">Product setup & Execution tools</h2>
+          <div class="business flex-container2">
+            <div class="flex-box2">
+                <hexagon-icon icon-image="SVG/cm.svg" icon-title="Configuration Management" icon-desc="Enable platform administration & configuration" title-below></hexagon-icon>
+            </div>
+            <div class="flex-box2">
+                <hexagon-icon icon-image="SVG/df.svg" icon-title="Data Foundation" icon-desc="Manage data ingestion & transformation
+                  " title-below></hexagon-icon>
+            </div>
+          </div>
+        </section> 
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+  
+  connectedCallback(){
+    
+  }
+
+});
+
+</script>

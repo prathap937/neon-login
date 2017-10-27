@@ -1,0 +1,110 @@
+<script>
+customElements.define('hexagon-icon', class extends HTMLElement{
+  constructor(){
+    super();
+  
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+<style>
+  #hexagon-icon{
+    width:230px;
+    position:relative;
+    margin:0 auto;
+    cursor:pointer;
+  }
+  #hexagon-icon.below{
+    width:350px;
+  }
+  #hexagon-icon .img img{
+    width:230px;
+  }
+  .img{
+    text-align:center;
+  }
+  #hexagon-icon .img.below img{
+    width:130px;
+    margin:0 auto 20px;
+  }
+  .title {
+    position: absolute;
+    text-align: center;
+    font-size: 1.3em;
+    width: 160px;
+    top: 115px;
+    left: 33px;
+  }
+  .header-info{
+    font-size: 1.05em;
+    color: #6a7077;
+    text-align: center;
+    margin-top: 10px;
+    line-height: 20px;
+  }
+  .icon-img{
+    position: absolute;
+    top: 50px;
+    left: 90px;
+  }
+  .title.below{
+    position: static;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+</style>
+
+      <div id="hexagon-icon">
+        <div class="background-icon">
+          <div class="img">
+            <img src=""  >
+          </div>
+          <div class="icon-img">
+            <img src=""  >
+          </div>
+          <div class="title">Intent Management</div>
+        </div>
+        <div class="header-info">Enable real-time, relevant engagement with customers to maximize their life time value</div>
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+  }
+
+  connectedCallback(){
+    let iconImage=this.getAttribute('icon-image');
+    let iconLogoImage=this.getAttribute('icon-logo-image');
+    let title=this.getAttribute('icon-title');
+    let desc=this.getAttribute('icon-desc');
+    let titleBelow=this.hasAttribute('title-below');
+    let href=this.getAttribute('href');
+
+    if(iconImage && iconImage.length > 2){
+      this.shadowRoot.querySelector('.img img').src=iconImage;
+    }else{
+      this.shadowRoot.querySelector('.img img').src="SVG/hexagon-icon.svg";
+    }
+    if(iconLogoImage && iconLogoImage.length > 2){
+      this.shadowRoot.querySelector('.icon-img img').src=iconLogoImage;
+    }
+    if(title && title.length > 0){
+      this.shadowRoot.querySelector('.title').innerHTML=title;
+    }
+    if(desc && desc.length > 0){
+      this.shadowRoot.querySelector('.header-info').innerHTML=desc;
+    }
+
+    if(titleBelow){
+      this.shadowRoot.querySelector('.title').classList.add('below');
+      this.shadowRoot.querySelector('.img').classList.add('below');
+      this.shadowRoot.querySelector('#hexagon-icon').classList.add('below');
+    }
+
+    this.addEventListener('click', (e) =>{
+      if(href && href.length > 3) location.href=href;
+    });
+  }
+
+
+});
+
+</script>

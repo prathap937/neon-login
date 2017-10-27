@@ -1,0 +1,68 @@
+<link rel="import" href="./flytxt-login/flytxt-login.html">
+<link rel="import" href="./neon-background.html">
+<script>
+customElements.define('login-page', class extends HTMLElement{
+  constructor(){
+    super();
+  
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        #neon{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+        #login{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          display: flex;
+        }
+        .left-content{
+          color:#fff;
+          flex: 3;
+          align-self: center;
+          margin-left: 10em;
+          z-index: 2;
+        }
+        .heading{
+          font-size: 3.5em;
+          line-height: 1.3;
+        }
+        .headingInfo{
+
+        }
+        .login-content{
+          flex: 2;
+          align-self: center;
+          z-index: 2;
+        }
+      </style>
+
+      <div class="login-page">
+        <section id="login">
+          <div class="left-content">
+            <div class="conten-head">
+              <div class="heading">NEON-dX: Digital Customer <br />Engagement</div>
+              <div class="headingInfo">Real-time, analytics-driven, integrated customer data analytics product for enterprises</div>
+            </div>
+          </div>
+          <div class="login-content">
+            <flytxt-login login-url="http://192.168.150.45/neon-ws/login" redirect-url="launch.html" ></flytxt-login>
+          </div>
+        </section>  
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+  
+  connectedCallback(){
+    
+  }
+
+});
+
+</script>

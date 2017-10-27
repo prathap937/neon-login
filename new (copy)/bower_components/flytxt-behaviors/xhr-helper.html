@@ -1,0 +1,173 @@
+<script>
+  var Flytxt = window.Flytxt = window.Flytxt || {};
+
+  /**
+  `Flytxt.XhrHelper` adds the following functionality for XHR:
+  <ul>
+    <li><b>handles displaying and hiding of load mask</b></li>
+  </ul>
+
+  For this functionality to work, add a loadMask element as follows in your index.html.
+
+      <div id="loadMask">
+        <paper-spinner active></paper-spinner>
+      </div>
+
+  And add styling similar to:
+
+      <style>
+      #loadMask {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       background: rgba(255, 255, 255, 0.3);
+      }
+    
+      #loadMask paper-spinner {
+       top: 50%;
+       left: 50%;
+       margin-left: -14px;
+      }
+      </style>
+      
+  <ul>
+    <li><b>common error handling - you may extend xhrErrors property or use webL10n to customize the error messages</b></li>
+  </ul>
+
+  Error are displayed as toasts, so add a toast element as follows in your index.html.
+
+      <paper-toast id="toast"></paper-toast>
+
+  For 401 error, which is usually a user not logged in or session timeout, an `unauthorized-session` event will be fired on window.
+  You may add event handling to perform relevant application logic.
+
+  @polymerBehavior Flytxt.XhrHelper
+   */
+
+  Flytxt.XhrHelper = {
+
+    properties: {
+      /**
+       * errors corresponding to HTTP failure status codes such as 4xx and 5xx.
+       * When using <a href="https://github.com/fabi1cazenave/webL10n">webL10n</a>, localised strings with keys xhrErrors.4xx and xhrErrors.5xx maybe used.
+       */
+      xhrErrors: {
+        type: Object,
+        value: {
+          401: 'Session timed out. Please login.',
+          403: 'Your are unauthorized to perform this action',
+          404: 'The application seems to be down at the moment. Please contact the administrator for more information.',
+          500: 'An Internal Server Error has occured. Please contact the administrator for more information.',
+          503: 'Temporarily unable to handle your request due to overloading or maintenance of the server. Please try again after sometime.'
+        }
+      }
+    },
+
+    /** @override */
+    attached: function() {
+      var me = this;
+      var key;
+      me.async(this._handleXhr);
+
+      if (document.webL10n) {
+        me.async(function() {
+          Object.observe(document.webL10n.getData(), function() {
+            if (document.webL10n && document.webL10n.getData().xhrErrors) {
+              var xhrErrors = document.webL10n.getData().xhrErrors;
+              for (key in xhrErrors) {
+                if (xhrErrors.hasOwnProperty(key)) {
+                  me.xhrErrors[key] = xhrErrors[key];
+                }
+              }
+            }
+          });
+        });
+      } else {
+        console.warn('webL10n missing!');
+      }
+    },
+
+    /**
+     * Adds the following functionality for XHR:
+     * <ul>
+     *  <li>handles displaying and hiding of load mask</li>
+     *  <li>common error handling</li>
+     * </ul>
+     */
+    _handleXhr: function() {
+      var me = this;
+      var restResources = this.querySelectorAll('iron-ajax, rest-resource');
+      var i;
+      var restResource;
+
+      me.loadMask = me.loadMask || document.querySelector('#loadMask');
+      if (!me.loadMask) {
+        console.warn('loadMask element missing!');
+      }
+
+      me.toast = me.toast || document.querySelector('#toast');
+      if (!me.toast) {
+        console.warn('toast element missing!');
+      }
+
+      var handleError = function(event) {
+        if (event.detail && event.detail.request && event.detail.request.status) {
+          if (this.getAttribute('skip-xhr-error-' + event.detail.request.status) !== null) { return; }
+          if (401 === event.detail.request.status) {
+            var responseHeaders = {};
+            var headerSplit;
+            event.detail.request.xhr.getAllResponseHeaders().split('\n').forEach(function(header) {
+              if (header) {
+                headerSplit = header.split(':');
+                responseHeaders[headerSplit[0].toLowerCase()] = headerSplit.slice(1).join(':').trim(' ');
+              }
+            });
+            var customEvent = new CustomEvent('unauthorized-session', {
+              detail: {
+                responseHeaders: responseHeaders
+              }
+            });
+            window.dispatchEvent(customEvent);
+          }
+          if (this.getAttribute('skip-xhr-message-' + event.detail.request.status) !== null) { return; }
+          if (me.xhrErrors[event.detail.request.status] && me.toast) {
+            me.toast.text = me.xhrErrors[event.detail.request.status];
+            me.toast.show();
+          }
+        }
+      };
+
+      if (restResources && restResources.length > 0) {
+        for (i = 0; i < restResources.length; i += 1) {
+          restResource = restResources[i];
+          if (me.loadMask) {
+            restResource.addEventListener('request', me.showMask.bind(me));
+            restResource.addEventListener('response', me.hideMask.bind(me));
+            restResource.addEventListener('error', me.hideMask.bind(me));
+          }
+          restResource.addEventListener('error', handleError);
+        }
+      }
+    },
+
+    /**
+     * Shows the loadMask if it is present in the document.
+     */
+    showMask: function() {
+      if (this.loadMask) {
+        this.loadMask.style.display = 'block';
+      }
+    },
+
+    /**
+     * Hides the loadMask if it is present in the document.
+     */
+    hideMask: function() {
+      if (this.loadMask) {
+        this.loadMask.style.display = 'none';
+      }
+    }
+  };
+</script>

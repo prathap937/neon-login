@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <input type="text" name="username" id="username" value="">
+    <input type="text" name="password" id="password" value="">
+    <button onclick="load()">fsdf</button>
+    <script type="text/javascript">
+      function load(){
+      var Username = "flyops@flytxt.com";
+      var password = "flytxt";
+      var rememberMe = true;
+
+      var http = new XMLHttpRequest();
+      var url = "http://192.168.150.45/neon-ws/login";
+      var params = 'username='+username+'&password='+password+'&rememberMe='+rememberMe;
+      http.open("POST", url, true);
+
+      //Send the proper header information along with the request
+      http.setRequestHeader("Content-type", "application/json");
+
+      http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            alert(http.responseText);
+        }
+      }
+      http.send(params);
+    }
+    </script>
+  </body>
+</html>

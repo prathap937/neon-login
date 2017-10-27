@@ -1,0 +1,122 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<dom-module id="hexagon-element">
+  <template>
+    <!-- <div>
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="174" height="200" viewbox="0 0 173.20508075688772 200" style="filter: drop-shadow(rgba(0, 0, 0, 0.5) 0px 0px 10px);"><path fill="#fff" d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
+    </div> -->
+    <div id="hex1" class="hexagon-wrapper">
+      <div id="color1" class="hexagon"></div>
+    </div>
+
+    <div class="login-form">
+      <div class="icons">
+          <img src="images/flytxt-logo-color.svg" alt="flytxt icon" id="flytxt-icon">
+          <img src="images/NEON_LOGO.svg" alt="neonDx icon" id="neonDx-icon">
+      </div>
+
+      <!-- <input type="text" name="username" id="username" class="inputFields" placeholder="Username">
+      <input type="text" name="password" id="password" class="inputFields" placeholder="Password">
+      <input type="checkbox" name="rememberMe" id="rememberMe"> Remember Me
+      <input type="button" name="signIn" id="signIn"> -->
+
+    </div>
+
+    <style>
+#flytxt-icon{
+position: absolute;
+top: 14%;
+left: 10%;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+#neonDx-icon {
+    position: absolute;
+    top: 13%;
+    left: 38%;
+    width: 96px;
+    height: 48px;
+}
+
+#username, #password{
+  position: absolute;
+top: 22%;
+left: 14%;
+width: 250px;
+height: 27px;
+border: none;
+border-bottom: 2px solid gray;
+}
+
+#password{
+  top: 29%;
+}
+
+#hex1 {
+width: 400px;
+height: 400px;
+transform: rotateZ(30deg);
+margin-top: 30px;
+}
+
+#color1 {
+background-color: #FFF;
+}
+
+.hexagon-wrapper {
+text-align: center;
+margin: 20px;
+position: relative;
+display: inline-block;
+}
+
+.hexagon {
+height: 100%;
+width: calc(100% * 0.57735);
+display: inline-block;
+}
+
+.hexagon:before {
+position: absolute;
+top: 0;
+right: calc((100% / 2) - ((100% * 0.57735) / 2));
+background-color: inherit;
+height: inherit;
+width: inherit;
+content: '';
+transform: rotateZ(60deg);
+}
+
+.hexagon:after {
+position: absolute;
+top: 0;
+right: calc((100% / 2) - ((100% * 0.57735) / 2));
+background-color: inherit;
+height: inherit;
+width: inherit;
+content: '';
+transform: rotateZ(-60deg);
+}
+    </style>
+  </template>
+<script type="text/javascript">
+
+  class HexagonElement extends Polymer.Element {
+    static get is() {
+      return 'hexagon-element';
+    }
+
+    static get properties() {
+      return {
+
+      }
+    }
+}
+  customElements.define('hexagon-element', HexagonElement);
+</script>
+</dom-module>

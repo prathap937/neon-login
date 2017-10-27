@@ -1,0 +1,28 @@
+{
+  "name": "flytxt-behaviors",
+  "version": "0.0.9",
+  "description": "A collection of polymer behaviors",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "behavior"
+  ],
+  "main": [
+    "flytxt-behaviors.html"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/gulpfile.js",
+    "/package.json"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "*",
+    "iron-component-page": "PolymerElements/iron-component-page#~1.0.9"
+  }
+}

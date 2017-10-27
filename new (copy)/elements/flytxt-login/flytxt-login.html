@@ -1,0 +1,75 @@
+<!-- <dom-module id="flytxt-login"> -->
+<template id="flytxt-login">
+  <iron-request id="xhr1"></iron-request>
+  <iron-ajax auto id="xhr" method="POST" handle-as="application/json" on-response="handleLogin">
+  </iron-ajax>
+
+
+  <div class="containerLogin">
+    <div id="content">
+      <div class="shape">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="522" height="600" viewbox="0 0 173.20508075688772 200" style="filter: drop-shadow(rgba(255, 255, 255, 0.5) 0px 0px 10px);">
+          <path fill=var(--my-bg-color) d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path>
+        </svg>
+      </div>
+      <!-- <div class="hexagon">
+    </div> -->
+      <div class="root">
+        <form>
+          <div class="containerl">
+            <p>asd</p>
+            <img src="{{logo1Src}}" alt="flytxt-logo" id="flytxt-icon">
+            <img src="{{logo2Src}}" alt="flytxt-logo" width="96px" height="48px" id="neonDx-icon">
+            <!-- <label><b>Username</b></label> -->
+            <input type="email" placeholder="Username" name="uname" id="username" on-input="signInColorChange">
+            <!-- <label><b>Password</b></label> -->
+            <input type="password" placeholder="Password" name="psw" id="password" on-input="signInColorChange" on-keypress="checkCapsLock">
+            <div class="capsLockAlert">
+              <div><img src="../../images/warning.svg" alt="" width="20px" height="20px">
+                <p>Caps Lock is on..!</p>
+              </div>
+              <!-- <p></p> -->
+            </div>
+            <div class="rememberMe">
+              <input type="checkbox" checked="checked" id="rememberMe"> Remember me
+            </div>
+            <button id="signIn" disabled=[[enableForm]] on-click="sendRequest">Sign In</button>
+            <a class="forgotPassword" href="#" on-click="forgotPasswordAction">Forgot Password?</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="forgotPasswordModal">
+    <div class="modalContent">
+      <p>The system will reset your password and send the new password to the registered email ID. Do you want to continue?</p>
+      <div class="buttons">
+        <button id="no" on-click="closeModal">No</button>
+        <button id="yes" on-click="passwordReset">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="forgotPasswordModalEmpty">
+    <div class="modalContent">
+      <p>Please provide a registered email address.</p>
+    </div>
+  </div>
+
+  <div id="passwordReset">
+    <div class="modalContent">
+      <p>Your password has been reset.</p>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+  class FlytxtLogin extends HTMLElement{
+  static get is(){
+    return 'flytxt-login';
+  }
+  }
+    document.registerElement('flytxt-login', FlytxtLogin);
+  </script>
+</template>
