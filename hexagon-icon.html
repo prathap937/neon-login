@@ -87,7 +87,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     if(iconImage && iconImage.length > 2){
       this.shadowRoot.querySelector('.img').innerHTML=iconImage;
     }else{
-      this.shadowRoot.querySelector('.img img').src="SVG/hexagon-icon.svg";
+      this.shadowRoot.querySelector('.img').innerHTML='<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 169.1 147.8" style="enable-background:new 0 0 169.1 147.8;" xml:space="preserve"><style type="text/css">.stdk0{fill:#F2653E;}.stdk1{opacity:0.5;}.stdk2{fill:#606060;}.stdk3{fill:#FFFFFF;}</style><path class="stdk0" d="M167,65.8L134.4,8.6c-2.9-5.2-8.4-8.4-14.3-8.5L51.1,0C45.7,0,40.8,2.7,38,7.3L2.3,65.8c-3,4.9-3.1,11.3-0.1,16.5l32.5,57.2c3,5.2,8.4,8.4,14.3,8.4l69,0.1c5.4,0,10.4-2.7,13.1-7.3l35.7-58.5C169.9,77.3,169.9,71,167,65.8z M159.2,81.5l-32.4,53c-2.5,4.2-7,6.6-11.9,6.6L52.3,141c-5.3,0-10.2-2.9-12.9-7.7L9.9,81.5C7.2,76.8,7.2,71.1,10,66.6l32.4-53c2.5-4.2,7-6.7,11.9-6.7l62.5,0.2c5.3,0,10.3,3,12.9,7.7l29.5,51.8C161.9,71.3,161.9,77,159.2,81.5z"/><g class="stdk1"><g><path class="stdk2" d="M131.2,12.7c-2.8-4.9-7.9-8-13.3-8L53.2,4.7c-5.1,0-9.7,2.6-12.3,6.9L7.5,66.4C4.6,71,4.6,76.9,7.4,81.7l30.5,53.5c2.8,4.9,8,7.9,13.3,8l64.7,0.1c5.1,0,9.7-2.6,12.3-6.8l33.5-54.8c2.9-4.6,2.9-10.5,0.1-15.4L131.2,12.7z"/></g></g><g><g><path class="stdk3" d="M130.9,13.2c-2.8-4.8-7.8-7.9-13.2-7.9L53.5,5.2c-5,0-9.6,2.6-12.2,6.9L8.1,66.4C5.2,71,5.2,76.9,8,81.7l30.2,53.1c2.8,4.8,7.9,7.8,13.2,7.9l64.2,0.1c5,0,9.6-2.6,12.2-6.8L161,81.7c2.9-4.6,2.9-10.5,0.1-15.3L130.9,13.2z"/></g></g></svg>';
     }
     if(iconLogoImage && iconLogoImage.length > 2){
       this.shadowRoot.querySelector('.icon-img').innerHTML=iconLogoImage;
