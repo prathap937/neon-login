@@ -62,13 +62,21 @@ customElements.define('neon-background', class extends HTMLElement{
   }
   
   connectedCallback(){
+    let self=this;
+    this.setBackgroundHexagon(self);
+
+    window.addEventListener('resize', (e)=>{this.setBackgroundHexagon(self);});
+  }
+
+  setBackgroundHexagon(self){
+    console.log('triggered',self);
     var skip={
       '3':[10,11,12,13,16,17,18,24,27,29,30,31],
       '4':[1,4,5,12,13,14,16,17,22,23,25,26,27,28,29,30],
       '5':[2,3,4,6,7,8,10,12,13,14,16,18,19,21,22,25,26,27,28,29,30],
     }
-    var hextop=this.shadowRoot.querySelector('.hex-top');
-    var heximg=this.shadowRoot.querySelector('.hex-top span').innerHTML;
+    var hextop=self.shadowRoot.querySelector('.hex-top');
+    var heximg=self.shadowRoot.querySelector('.hex-top span').innerHTML;
     var res="";
     for(var j=0; j< 5 ; j++){
       res+=`<div class="row rowno-${j}">`;
@@ -87,7 +95,7 @@ customElements.define('neon-background', class extends HTMLElement{
     }
     hextop.innerHTML=res;
 
-    var hexbot=this.shadowRoot.querySelector('.hex-bot');
+    var hexbot=self.shadowRoot.querySelector('.hex-bot');
     var res="";
     for(var j=0; j< 5 ; j++){
       res+=`<div class="row rowno-${j}">`;
