@@ -46,7 +46,11 @@ customElements.define('launch-page', class extends HTMLElement{
         .flex-box2{
           flex: 1;
         }
-        
+        @media screen and (max-width: 1000px) {
+          .flex-container2,.flex-container1{
+            width:99%;
+          }
+        }
       </style>
 
       <div class="launch-page">
