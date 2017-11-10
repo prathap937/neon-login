@@ -313,12 +313,12 @@ customElements.define('flytxt-login', class extends HTMLElement{
     this.shadowRoot.querySelector('#login-submit').addEventListener('click', (e) => {
       let val=this.checkValidation();
       if( val !== false){
-        let url=(this.hasAttribute('login-url'))? this.getAttribute('login-url') :'http://192.168.150.45/neon-ws/login';
+        let url=this.hasAttribute('login-url') ? this.getAttribute('login-url') :'http://192.168.150.45/neon-ws/login';
         let method="post";
         this.loginCheck(url,method,val.username,val.password,val.rememberMe)
           .then((res)=>{
             this.shadowRoot.querySelector('.err.login').style.display="none";
-            location.href=this.getAttribute('redirect-url');
+            location.href=this.getAttribute('redirect-url') || '/index.html';
           })
           .catch((e)=>{
              this.shadowRoot.querySelector('.err.login').style.display="block";

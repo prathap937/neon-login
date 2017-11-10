@@ -102,20 +102,23 @@ customElements.define('neon-header', class extends HTMLElement{
           text-align: left;
           background: #fff;
           color: #444;
-          padding: 20px;
+          padding: 0px;
           font-size: 1.1em;
           margin-top: 0;
-          width: 150px;
+          width: 210px;
           right: 10px;
           border-radius: 3px;
           z-index: 2;
           box-shadow: 0px 2px 8px #444;
         }
+        
         .user-name .down li a{
-          padding:10px 0;
+          padding:10px 20px;
           color:#006599;
           text-decoration:none;
           display:inline-block;
+          width: 210px;
+          box-sizing: border-box;
         }
         .user-name:hover .down{
           display:block;
@@ -139,7 +142,7 @@ customElements.define('neon-header', class extends HTMLElement{
                 <option>System Global</option>
               </select>
             </div>
-            <div class="time flex-box"><span>12.27pm<span></div>
+            <div class="time flex-box"><span>12.27 pm<span></div>
             
             <div class="notification flex-box">
 
@@ -149,7 +152,7 @@ customElements.define('neon-header', class extends HTMLElement{
             
             <div class="user-options flex-box">
               <div class="user-name">
-                <span class="user-drop">Naveen 
+                <span class="user-drop"><span class="usrname">Naveen1 </span>
                   <span class="drop-down">
 
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;width: 25px;" xml:space="preserve"><style type="text/css">.st0{fill:#657D89;}.st1{fill:#EF3A39;}.st2{fill:#1F2328;}.st3{fill:#C9C9C9;}.st4{fill:#010101;}.st5{fill:#59BA47;}.st6{fill:#F16464;}.st7{fill:#086699;}.st8{enable-background:new;}.st9{fill:#C9C9C9;enable-background:new;}.st10{fill:#62C195;}.st11{opacity:0;fill:#FFFFFF;}.st12{display:none;}.st13{display:inline;opacity:0.32;fill:#F05023;}</style><path class="st3" d="M18,8.75l-6,6.5l-6-6.5l1.51,0l4.49,0l4.49,0L18,8.75z"/><g><rect x="0" y="0" class="st11" width="24" height="24"/><rect x="0" y="0" class="st11" width="24" height="24"/><rect y="0" class="st11" width="24" height="24"/></g><g class="st12"><rect x="4" y="4" class="st13" width="16" height="16"/></g></svg>
@@ -170,8 +173,55 @@ customElements.define('neon-header', class extends HTMLElement{
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
   
+  // static observedAttributes(){
+  //   return ['user-name'];
+  // }
+
   connectedCallback(){
+    this.setTime();
+    this.setUserName();
+    this.setPartners();
+  }
+
+  setUserName(){
+    this.shadowRoot.querySelector('.usrname').innerText=this.getAttribute('user-name') || 'Admin';
+  }
+  setTime(){
+    let date=new Date();
+    let time=((date.getHours() < 12) ? date.getHours() : date.getHours() - 12)+":"+date.getMinutes()+" "+((date.getHours() < 12) ? "AM" : "PM");
+    this.shadowRoot.querySelector('.time span').innerText=time;
+  }
+
+  setPartners(){
+    this.getPartners().then(res=>{
+      console.log(JSON.parse(res)._embedded.partners);
+    }).catch(e=>{
+      console.log('error:',e);
+    });
+  }
+
+  getPartners(){
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', this.getAttribute('partners-url') || 'http://192.168.150.45/neon-ws/partners?deleted=0&size=1000' );
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else {
+          reject({status: this.status,statusText: xhr.statusText});
+        }
+      };
+      xhr.onerror = function () {
+        reject({status: this.status,statusText: xhr.statusText});
+      };
+      xhr.send();
+    });
+
     
+  }
+
+  attributeChangedCallback(){
+
   }
 
 });
