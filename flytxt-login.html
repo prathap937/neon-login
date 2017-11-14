@@ -7,29 +7,28 @@ customElements.define('flytxt-login', class extends HTMLElement{
     template.innerHTML = ` 
       <style>
         .login{
-          width:515px;
+          width:375px;
           height:auto;
           position: relative;
         }
         .login-form{
           position: absolute;
-          top: 130px;
-          left: 50px;
-          width: 390px;
+          top: 100px;
+          left: 25px;
+          width: 325px;
         }
         .images{
           overflow:hidden;  
           margin-bottom: 20px;
-          padding-bottom:15px;
+          padding-bottom:0;
         }
         .left-img{
-          width:75px;
+          width:60px;
           float:left
         }
         .right-img{
-          width:95px;
+          width:70px;
           float:right;
-          margin-top: 10px;
         }
         .right-img img{
           height: 16px;
@@ -38,20 +37,18 @@ customElements.define('flytxt-login', class extends HTMLElement{
         .form-groub {
           padding-bottom: 15px;
           position: relative;
-          height: 50px;
+          height: 40px;
         }
         .form-groub input:focus + label{
           top:-12px;
-          font-size:0.8em
+          font-size:0.7em
         }
         .form-groub input.has-value +label{
           top:-12px;
-          font-size:0.8em
+          font-size:0.7em
         }
-
         .form-groub input:focus{
           outline:none; 
-
         }
         .form-groub label{
           position: absolute;
@@ -62,41 +59,46 @@ customElements.define('flytxt-login', class extends HTMLElement{
         }
         .form-groub input{
           width: 100%;
-          height: 30px;
+          height: 25px;
           border: none;
           border-bottom: 1px solid #171a28;
-          font-size: 18px;
+          font-size: 15px;
           color: #444;
+        }
+        .err{
+          font-size:0.6em;
+          color:red;
+          position: absolute;
         }
         .form-groub-checkbox{
           overflow:hidden;
         }
         .form-groub-checkbox input{
-          width: 16px;
-          height: 16px;
+          width: 13px;
+          height: 13px;
           vertical-align: sub;
         }
         .form-groub-checkbox div{
-          width: 130px;
+          width: 100px;
           float: right;
-          font-size: 14px;
+          font-size: 11px;
           color: #666;
         }
-        
         .form-groub-submit{
           margin-top: 15px;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
+          text-align: center;
         }
         .form-groub-submit img{
           width:40px;
         }
         .form-groub-submit button{
-          font-size: 20px;
+          font-size: 15px;
           color: #fff;
           background: #F8A02B;
           outline: none;
           border: none;
-          padding: 15px 140px;
+          padding: 10px 120px;
           cursor:pointer;
           border-radius: 5px;
         }
@@ -112,13 +114,9 @@ customElements.define('flytxt-login', class extends HTMLElement{
         .form-groub-forgot a{
           color:#5b85c2;
           text-decoration: none;
-          font-size: 1.2em;
+          font-size: 0.9em;
         }
-        .err{
-          font-size:0.8em;
-          color:red;
-          position: absolute;
-        }
+        
         .err.login{
           display: inline-block;
           text-align: center;
@@ -183,6 +181,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
         }
         #login-submit.enable .white{
           display:inline-block;
+          vertical-align: middle;
         }
         #login-submit.enable .yellow{
           display:none;
@@ -192,6 +191,10 @@ customElements.define('flytxt-login', class extends HTMLElement{
         }
         #login-submit .yellow{
           display:inline-block;
+          vertical-align: middle;
+        }
+        .pb0{
+          padding-bottom:0 !important;
         }
       </style>
 
@@ -226,7 +229,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
             <label for="username">Username</label>
             <span class="err username" style="display:none">Invalid Username</span>
           </div>  
-          <div class="form-groub">
+          <div class="form-groub pb0">
             <input type="password" id="password" value="flytxt">
             <label for="password">Password</label>
             <span class="err password" style="display:none">Invalid Username</span>
@@ -238,8 +241,8 @@ customElements.define('flytxt-login', class extends HTMLElement{
           </div>
           <div class="form-groub-submit">
             <button id="login-submit" disabled>Sign In 
-              <span class="white"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="15.068" viewBox="0 0 36 15.068"><path fill="#FFF" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#FFF" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#FFF" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#FFF" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
-              <span class="yellow"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="15.068" viewBox="0 0 36 15.068"><path fill="#F8A02B" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#F8A02B" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
+              <span class="white"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="15.068" viewBox="0 0 36 15.068"><path fill="#FFF" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#FFF" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#FFF" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#FFF" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
+              <span class="yellow"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="15.068" viewBox="0 0 36 15.068"><path fill="#F8A02B" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#F8A02B" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
             </button>
             <span class="err login" style="display:none">Invalid Username/Password</span>
           </div>

@@ -24,32 +24,32 @@ customElements.define('neon-background', class extends HTMLElement{
         .hex-bot{
           position: absolute;
           width: 102%;
-          height: 30%;
-          bottom: -32px;
+          bottom: -20px;
           z-index: 1;
         }
         .hex-bot span{
           display: inline;
-          width: 65px;
+          width: 45px;
           height: auto;
         }
         .hex-top span{
           display: inline;
-          width: 65px;
+          width: 45px;
           height: auto;
         }
         .row{
           width:110%;
           overflow:hidden;
+          margin-bottom:5px;
         }
         .row:not(:first-child) {
           margin-top: -20px;
         }
         .row:nth-child(odd){
-          margin-left: 32.5px;
+          margin-left: 25.5px;
         }
         .hex-top span svg, .hex-bot span svg{
-          width:60px;
+          width:45px;
         }
       </style>
       <div class="background-neon">
@@ -83,7 +83,7 @@ customElements.define('neon-background', class extends HTMLElement{
     var res="";
     for(var j=0; j< 5 ; j++){
       res+=`<div class="row rowno-${j}">`;
-      let rowLenght=Math.floor(window.innerWidth/65);
+      let rowLenght=Math.floor(window.innerWidth/45);
       for(var i=1; i <= rowLenght+1; i++){
         let style='';
         if(skip[j+1]){
@@ -102,7 +102,7 @@ customElements.define('neon-background', class extends HTMLElement{
     var res="";
     for(var j=0; j< 5 ; j++){
       res+=`<div class="row rowno-${j}">`;
-      let rowLenght=Math.floor(window.innerWidth/65);
+      let rowLenght=Math.floor(window.innerWidth/45);
       for(var i=1; i <= rowLenght+1; i++){
          res+=`<span>${heximg}</span>`;
       }
