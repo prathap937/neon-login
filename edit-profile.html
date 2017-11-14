@@ -1,0 +1,231 @@
+
+
+<script>
+customElements.define('edit-profile', class extends HTMLElement{
+  constructor(){
+    super();
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        :host{
+          display:none;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: #0009;
+        }
+        :host([show]){
+          display:block;
+        }
+        .edit-profile-background{
+          width: 450px;
+          margin: 0 auto;
+          top: 15%;
+          position: relative;
+          background: #fff;
+          padding: 20px;
+        }
+        header{
+          margin-bottom: 20px;
+        }
+        header hr,footer hr{
+          width: 488px;
+          margin-left: -20px;
+        }
+        .form-groub {
+          padding-bottom: 5px;
+          position: relative;
+          height: 50px;
+        }
+        .form-groub label{
+          position: absolute;
+          top: 5px;
+          font-size: 0.9em;
+          color: #666;
+          transition: 0.2s all;
+        }
+        .form-groub input{
+          width: 100%;
+          height: 25px;
+          border: none;
+          border-bottom: 1px solid #7f7f7f;
+          font-size: 17px;
+          color: #444;
+        }
+        .form-groub input:focus{
+          outline:none; 
+        }
+        .form-groub input:focus + label{
+          top:-12px;
+          font-size:0.8em
+        }
+        .form-groub input.has-value +label{
+          top:-12px;
+          font-size:0.8em
+        }
+        .err{
+          font-size:0.8em;
+          color:red;
+          position: absolute;
+        }
+        .action-btn{
+          padding-top: 10px;
+          text-align: right;
+        }
+        .action-btn .editProfileCancel{
+          background-color:#fff;
+          color:#6e6e6e;
+        }
+        .action-btn button {
+          background-color: #006599;
+          color: #FFFFFF;
+          padding: 12px 25px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+
+        .clearfloat{
+          clear:both;
+        }
+        .w50l{
+          width:50%;
+          float:left;
+          padding-right:5px;
+          box-sizing:border-box;
+        }
+        .w50r{
+          width:50%;
+          float:right;
+          padding-left:5px;
+          box-sizing:border-box;
+        }
+        
+
+
+      </style>
+      
+      <div class="edit-profile-background">
+        <section class="edit-profile">
+          <header><strong>Profile</strong><hr></header>
+          <main>
+            <div class="form-groub w50l">
+              <input type="text" id="firstName" >
+              <label for="firstName">firstName</label>
+              <span class="err firstName" style="display:none">Invalid First Name</span>
+            </div> 
+            <div class="form-groub w50r">
+              <input type="text" id="lastName" >
+              <label for="lastName">lastName</label>
+              <span class="err lastName" style="display:none">Invalid Last Name</span>
+            </div> 
+            <div class="form-groub clearfloat">
+              <input type="text" id="email" >
+              <label for="email">email</label>
+              <span class="err email" style="display:none">Invalid Email</span>
+            </div> 
+            <div class="form-groub">
+              <input type="text" id="phone" >
+              <label for="phone">phone</label>
+              <span class="err phone" style="display:none">Invalid Phone</span>
+            </div> 
+            <div class="form-groub">
+              <input type="text" id="webLanguageId" list="webLanguageIdList" >
+              <label for="webLanguageId">Language</label>
+              <span class="err webLanguageId" style="display:none">Invalid Language</span>
+              <datalist id="webLanguageIdList"></datalist>
+            </div> 
+            <div class="form-groub">
+              <input type="text" id="timezone" list="timezoneList" >
+              <label for="timezone">timezone</label>
+              <span class="err timezone" style="display:none">Invalid timezone</span>
+              <datalist id="timezoneList"></datalist>
+            </div> 
+            <div class="form-groub">
+              <input type="text" id="localeId" list="localeIdList" >
+              <label for="localeId">localeId</label>
+              <span class="err localeId" style="display:none">Invalid locale</span>
+              <datalist id="localeIdList"></datalist>
+            </div> 
+
+          </main>
+          <footer> 
+            <hr>
+            <div class="action-btn">
+              <button class="editProfileCancel">Cancel</button>
+              <button class="editProfileSave">Save</button>
+            </div>
+          </footer>
+        </section>
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    /*for input focus effect*/
+    this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
+      input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
+        this.checkValidation();
+      });
+    });
+  }
+  
+  connectedCallback(){ 
+    this.data=JSON.parse(sessionStorage.getItem('login_response'));
+    this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
+    this.fillProfileData();
+
+
+  }
+
+  fillProfileData(){
+    Promise.all([
+      this.getUserData(this.url+"/neon-ws/webUsers/"+this.data.id),
+      this.getUserData(this.url+"/neon-ws/webUsers/"+this.data.id+"/webLanguage"),
+      this.getUserData(this.url+"/neon-ws/webUsers/"+this.data.id+"/timezone"),
+      this.getUserData(this.url+"/neon-ws/timeZones/?size=100"),
+      this.getUserData(this.url+"/neon-ws/webLanguages"),
+      this.getUserData(this.url+"/neon-ws/locales/?size=100"),
+      ]).then(res=>{
+        this.shadowRoot.querySelector('#firstName').value=JSON.parse(res[0]).firstName;
+        this.shadowRoot.querySelector('#lastName').value=JSON.parse(res[0]).lastName;
+        this.shadowRoot.querySelector('#email').value=JSON.parse(res[0]).emailAddress;
+        this.shadowRoot.querySelector('#phone').value=JSON.parse(res[0]).phoneMobile;
+        this.shadowRoot.querySelector('#webLanguageId').value=JSON.parse(res[1]).name;
+        this.shadowRoot.querySelector('#timezone').value=JSON.parse(res[2]).description;
+        this.shadowRoot.querySelector('#timezone').value=this.data.localeId;
+        this.setTimezoneList(JSON.parse(res[3])._embedded.timeZones);
+        this.setWebLanguageList(JSON.parse(res[4])._embedded.webLanguages);
+        this.setWebLocaleList(JSON.parse(res[5])._embedded.locales);
+      });
+  }
+  setTimezoneList(timezones){
+
+  }
+  setWebLanguageList(languages){
+
+  }
+  setWebLocaleList(locales){
+
+  }
+
+  getUserData(url){
+    return new Promise((response,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open('GET',url);
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send();
+    });
+  }
+
+});
+</script>
