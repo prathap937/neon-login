@@ -56,7 +56,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
         .form-groub label{
           position: absolute;
           top: 10px;
-          font-size: 1.2em;
+          font-size: 1em;
           color: #666;
           transition: 0.2s all;
         }
@@ -317,6 +317,9 @@ customElements.define('flytxt-login', class extends HTMLElement{
         let method="post";
         this.loginCheck(url,method,val.username,val.password,val.rememberMe)
           .then((res)=>{
+            var res=
+            sessionStorage.setItem('login_response', res ? res : false );
+
             this.shadowRoot.querySelector('.err.login').style.display="none";
             location.href=this.getAttribute('redirect-url') || '/index.html';
           })
@@ -347,7 +350,6 @@ customElements.define('flytxt-login', class extends HTMLElement{
       if(e.target.classList.contains('no')){
         this.shadowRoot.querySelector('.forgot-modal-background').style.display="none";
       }
-      
     });
   }
   resetPassword(){

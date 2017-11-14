@@ -1,4 +1,6 @@
 <link rel="import" href="./hexagon-icon.html">
+<link rel="import" href="./hexagon-icon.html">
+<link rel="import" href="./edit-profile.html">
 <script>
 customElements.define('launch-page', class extends HTMLElement{
   constructor(){
@@ -9,12 +11,12 @@ customElements.define('launch-page', class extends HTMLElement{
       <style>
         section.dash-content1 {
           padding-bottom: 20px;
-          padding-top: 40px;
+          padding-top: 20px;
         }
         h2.page-head1 {
           text-align: center;
           color: #fff;
-          margin: 20px 15px 60px;
+          margin: 20px 15px 30px;
           font-size: 2em;
           font-weight: 100 !important;
         }
@@ -27,12 +29,12 @@ customElements.define('launch-page', class extends HTMLElement{
           flex:1;
         }
         section.dash-content2 {
-          padding-top: 30px;
-          padding-bottom: 30px;
+          padding-top: 20px;
+          padding-bottom: 10px;
         }
         h2.page-head2 {
-          margin-top: 20px;
-          margin-bottom: 60px;
+          margin-top: 0px;
+          margin-bottom: 50px;
           text-align: center;
           color: #606161;
           font-size: 2em;
@@ -112,6 +114,12 @@ c0.2,0.1,0.4,0.2,0.4,0.4c0.1,0.2,0,0.4-0.1,0.5c-0.5,0.5-1,1-1.5,1.5C25,25.9,24.9
             </div>
           </div>
         </section> 
+        <edit-profile show="show">
+          <motor-node>
+              from child
+          </motor-node>
+
+        </edit-profile>
       </div>
     `;
     this.attachShadow({mode: 'open'});

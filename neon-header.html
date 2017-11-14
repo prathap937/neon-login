@@ -78,7 +78,7 @@ customElements.define('neon-header', class extends HTMLElement{
           align-self: center;
         }
         .user-options {
-          min-width: 160px;
+          min-width: 220px;
           text-align: right;
           align-self: center;
           color: #fff;
@@ -123,6 +123,122 @@ customElements.define('neon-header', class extends HTMLElement{
         .user-name:hover .down{
           display:block;
         }
+
+        /*partner change model*/
+        .change-partner{
+          position: fixed;
+          top: 40%;
+          min-width: 500px;
+          padding: 15px;
+          font-size: 1.2em;
+          background: #fff;
+          box-shadow: 1px 1px 19px #0009;
+          border-radius: 2px;
+          max-width: 90%;
+          width: 70%;
+          margin: 0 15%;
+        }
+        .change-partner-background{
+          display:none;
+          background: #00000085;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          z-index:2;
+        }
+        .action-btn button{
+          background-color: #006599;
+          color: #FFFFFF;
+          padding: 12px 25px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          cursor:pointer;
+        }
+        .modal-footer {
+          padding: 10px 0 0;
+          text-align: right;
+        }
+        button.changePartnerNo{
+          color:#006599;
+          background-color:#fff;
+        }
+
+        /* chagne password */
+        .change-password{
+          position: fixed;
+          top: 25%;
+          min-width: 300px;
+          padding: 15px;
+          font-size: 1.2em;
+          background: #fff;
+          box-shadow: 1px 1px 19px #0009;
+          border-radius: 2px;
+          max-width: 90%;
+          width: 50%;
+          margin: 0 22%;
+        }
+        .change-password-background{
+          display:none;
+          background: #00000085;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          z-index:2;
+        }
+        .change-password-background .modal-header{
+          margin-bottom: 15px;
+        }
+        .change-password-background .modal-footer{
+          padding:0px;  
+        }
+        /*input style */
+        .form-groub {
+          padding-bottom: 10px;
+          position: relative;
+          height: 50px;
+        }
+        .form-groub input:focus + label{
+          top:-12px;
+          font-size:0.8em
+        }
+        .form-groub input.has-value +label{
+          top:-12px;
+          font-size:0.8em
+        }
+
+        .form-groub input:focus{
+          outline:none; 
+
+        }
+        .form-groub label{
+          position: absolute;
+          top: 10px;
+          font-size: 0.9em;
+          color: #666;
+          transition: 0.2s all;
+        }
+        .form-groub input{
+          width: 100%;
+          height: 30px;
+          border: none;
+          border-bottom: 1px solid #7f7f7f;
+          font-size: 18px;
+          color: #444;
+        }
+        .err{
+          font-size:0.6em;
+          color:red;
+          position: absolute;
+        }
+        button.changePasswordNo{
+          background: #fff;
+          color: #666;
+        }
       </style>
 
       <div id="neon-header">
@@ -159,18 +275,67 @@ customElements.define('neon-header', class extends HTMLElement{
                   </span>
                 </span>
                 <ul class="down">
-                  <li><a href="#">Change Password</a></li>
+                  <li><a href="#" class="changePasswordModal">Change Password</a></li>
                   <li><a href="#">Edit Profile</a></li>
                   <li><a href="#">preferences</a></li>
-                  <li><a href="#"> Logout</a></li>
+                  <li><a href="#" class="logout"> Logout</a></li>
                 </ul>
               </div>
             </div>
         </header>
+        <div class="change-partner-background">
+          <div class="change-partner">
+            <div class="modal-header">The system will reset your password and send the new password to the registered email ID. Do you want to continue?</div>
+            <div class="modal-footer">
+              <div class="action-btn">
+                <button class="changePartnerNo">No</button>
+                <button class="changePartnerYes">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="change-password-background">
+          <div class="change-password">
+            <div class="modal-header">
+              <strong>Change Password</strong>
+              <hr>
+            </div>
+            <div class="modal-content">
+              <div class="form-groub">
+                <input type="text" id="password"  >
+                <label for="password">Username</label>
+                <span class="err password" style="display:none">Invalid password</span>
+              </div>
+              <div class="form-groub">
+                <input type="text" id="newpassword"  >
+                <label for="newpassword">New Nassword</label>
+                <span class="err newpassword" style="display:none">Invalid password</span>
+              </div> 
+              <div class="form-groub">
+                <input type="text" id="confirmpassword"  >
+                <label for="confirmpassword">Confirm Password</label>
+                <span class="err confirmpassword" style="display:none">Invalid password</span>
+              </div>  
+            </div>
+            <div class="modal-footer">
+              <div class="action-btn">
+                <button class="changePasswordNo">Cancel</button>
+                <button class="changePasswordYes">Change</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     `;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+     this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
+      input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
+        this.checkValidation();
+      });
+    });
   }
   
   // static observedAttributes(){
@@ -178,14 +343,114 @@ customElements.define('neon-header', class extends HTMLElement{
   // }
 
   connectedCallback(){
+    if(!sessionStorage.getItem('login_response')) 
+      location.href="/index.html";
+
+    this.data=JSON.parse(sessionStorage.getItem('login_response'));
+    this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
+
     this.setTime();
     this.setUserName();
     this.setPartners();
+
+    this.shadowRoot.querySelector('.profile').addEventListener('change',(e)=>{
+      this.shadowRoot.querySelector('.change-partner-background').style.display="block";
+    });
+
+    this.shadowRoot.querySelector('.changePartnerYes').addEventListener('click',()=>{
+      this.changePartner(this.url,this.shadowRoot.querySelector('.profile').value);
+    });
+
+    this.shadowRoot.querySelector('.changePartnerNo').addEventListener('click',()=>{ 
+      this.shadowRoot.querySelector('.change-partner-background').style.display="none";
+    });
+
+    this.shadowRoot.querySelector('.changePasswordModal').addEventListener('click',()=>{ 
+      this.shadowRoot.querySelector('.change-password-background').style.display="block";
+    });
+
+    this.shadowRoot.querySelector('.changePasswordYes').addEventListener('click',(e)=>{ 
+      this.changePassword("http://192.168.150.45"+"/neon-ws/changePassword",);
+    });
+
+    this.shadowRoot.querySelector('.changePasswordNo').addEventListener('click',(e)=>{ 
+      this.shadowRoot.querySelector('.change-password-background').style.display="none";
+    });
+    
+    this.shadowRoot.querySelector('.logout').addEventListener('click',(e)=>{ 
+      this.logout(this.url+'/neon-ws/logout').then(res=>{
+        if(sessionStorage.login_response) delete sessionStorage.login_response
+        if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
+          location.href=this.getAttribute('login-url');
+        }
+        location.href="/index.html";
+      }).catch(err=>{
+        if(sessionStorage.login_response) delete sessionStorage.login_response
+        if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
+          location.href=this.getAttribute('logout-url');
+        }
+      });
+    });
+
+
   }
 
-  setUserName(){
-    this.shadowRoot.querySelector('.usrname').innerText=this.getAttribute('user-name') || 'Admin';
+  changePassword(url){
+    //http://192.168.150.45/neon-ws/changePassword
+    let valid=this.checkValidation();
+    if(valid){
+      return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.setRequestHeader("content-type","application/x-www-form-urlencoded");
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else { reject({status: this.status,statusText: xhr.statusText}); }
+        };
+        xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+        xhr.send(`userId=${this.data.id}&currentPassword=${valid.password}&newPassword=${valid.newpassword}`);
+      });
+    }
+    return false;
   }
+
+  checkValidation(){
+      let password=this.shadowRoot.querySelector('#password');
+      let newpassword=this.shadowRoot.querySelector('#newpassword');
+      let confirmpassword=this.shadowRoot.querySelector('#confirmpassword');
+      let err=0;
+
+      if(password.value.length < 4 ){
+        this.shadowRoot.querySelector('.err.password').style.display="block";
+        err++;
+      }else{
+        this.shadowRoot.querySelector('.err.password').style.display="none";
+      }
+
+      if(newpassword.value.length < 4 ){
+        this.shadowRoot.querySelector('.err.newpassword').style.display="block";
+        err++;
+      }else{
+        this.shadowRoot.querySelector('.err.newpassword').style.display="none";
+      }
+      
+      if(confirmpassword.value.length < 4 ){
+        this.shadowRoot.querySelector('.err.confirmpassword').style.display="block";
+        err++;
+      }else{
+        this.shadowRoot.querySelector('.err.confirmpassword').style.display="none";
+      }
+
+      if(err == 0) return {password:password.value,newpassword:newpassword.value};
+
+      return false;
+  }
+  setUserName(){
+
+    this.shadowRoot.querySelector('.usrname').innerText=this.data.firstName+' '+this.data.lastName || 'Admin';
+  }
+
   setTime(){
     let date=new Date();
     let time=((date.getHours() < 12) ? date.getHours() : date.getHours() - 12)+":"+date.getMinutes()+" "+((date.getHours() < 12) ? "AM" : "PM");
@@ -193,35 +458,55 @@ customElements.define('neon-header', class extends HTMLElement{
   }
 
   setPartners(){
-    this.getPartners().then(res=>{
-      console.log(JSON.parse(res)._embedded.partners);
-    }).catch(e=>{
-      console.log('error:',e);
+    let options="";
+    for(let p of this.data.sudoPartners){
+      let selected="";
+      if(p.id === this.data.partnerId) selected="selected";
+      options+=`<option ${selected} value="${p.id}">${p.name}</option>`
+    }
+    this.shadowRoot.querySelector('.profile').innerHTML=options;
+  }
+
+  changePartner(url,id){
+    this.changePartnerCall( url +"/neon-ws/changePartner?partnerId="+ id).then(res=>{
+        let changeVal=JSON.parse(res);
+        if(changeVal.partnerId== id){
+          console.log('chagned partner');
+        }else{
+          console.log('error in change partner');
+        }
+    }).catch(err=>{
+      console.error(err);
     });
   }
 
-  getPartners(){
-    return new Promise((resolve, reject) => {
+  changePartnerCall(url){
+    return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', this.getAttribute('partners-url') || 'http://192.168.150.45/neon-ws/partners?deleted=0&size=1000' );
+      xhr.open('GET', url);
       xhr.onload = function () {
         if (this.status >= 200 && this.status < 300) {
           resolve(xhr.response);
-        } else {
-          reject({status: this.status,statusText: xhr.statusText});
-        }
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
       };
-      xhr.onerror = function () {
-        reject({status: this.status,statusText: xhr.statusText});
-      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
       xhr.send();
     });
-
-    
   }
 
-  attributeChangedCallback(){
+  logout(url){
+    return new Promise((response,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open('GET',url);
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send();
 
+    });
   }
 
 });
