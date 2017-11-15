@@ -123,9 +123,10 @@ customElements.define('edit-preferences', class extends HTMLElement{
                 </div>
               </div>
               <div class="form-groub w50l">
-                <input type="text" id="preferedpartner" class="has-value">
+                <input type="text" id="preferedpartner" class="has-value" list="preferedpartnerList">
                 <label for="preferedpartner">Prefered Partner</label>
                 <span class="err preferedpartner" style="display:none">Prefered Partner</span>
+                <datalist id="preferedpartnerList"></datalist>
               </div> 
               <div class="form-groub-checkbox">
                 <div>
@@ -153,7 +154,6 @@ customElements.define('edit-preferences', class extends HTMLElement{
     /*for input focus effect*/
     this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
       input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
-        this.checkValidation();
       });
     });
 
@@ -169,32 +169,53 @@ customElements.define('edit-preferences', class extends HTMLElement{
 
   connectedCallback(){
     if(!sessionStorage.getItem('login_response')) location.href="/index.html";
-      
-    this.data=JSON.parse(sessionStorage.getItem('login_response'));
-    this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
-    this.setData();
+    
+    this.url=location.origin;
 
-
+    this.callAPI('GET', this.url+'/neon-ws/auth/status').then(res=>{
+      sessionStorage.setItem('login_response',res);
+      this.data=JSON.parse(sessionStorage.getItem('login_response'));
+      this.setData();
+    });
+    // .catch(err=>{  
+    //   console.log('error in get preferences'+err);
+    //   this.data=JSON.parse(sessionStorage.getItem('login_response'));
+    // })
   }
 
   savePreferences(){
-    let showClock=(this.shadowRoot.querySelector('#showClock').checked) ? "true" : "false";
-    let preferredPartnerId="";
-    let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "/" : "";
-
-    this.callAPI('POST',this.url+"/neon-ws/saveUserPreference",
-      {
-        isClockActive:showClock,
-        preferredHomePage:preferredHomePage,
-        preferredPartnerId:preferredPartnerId,
+    let valid=this.checkValidation();
+    if(valid){
+      let showClock=(this.shadowRoot.querySelector('#showClock').checked) ? "true" : "false";
+      let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "/" : "";
+      let data={
+        isClockActive : showClock,
+        preferredHomePage : preferredHomePage,
+        preferredPartnerId : valid.preferredPartnerId,
         userId:this.data.id
-      }).then(res=>{
+      };
+      this.callAPI('POST',this.url+"/neon-ws/saveUserPreference",JSON.stringify(data)).then(res=>{
         console.log('success');
         this.removeAttribute('show');
       }).catch(err=>{
         console.error('error in show preferences');
         this.removeAttribute('show');
       });
+    }
+  }
+
+  checkValidation(){
+    let err=0;
+    if(!this.getPartnerID()){
+      this.shadowRoot.querySelector('.err.preferedpartner').innerText="Please provide valid Partner!";
+      this.shadowRoot.querySelector('.err.preferedpartner').style.display="block";
+      err++;
+    }else{
+      this.shadowRoot.querySelector('.err.preferedpartner').style.display="none";
+    }
+
+    if(err == 0) return {preferredPartnerId:parseInt(this.getPartnerID())};
+    return false;
   }
 
   setData(){
@@ -220,10 +241,27 @@ customElements.define('edit-preferences', class extends HTMLElement{
       this.shadowRoot.querySelector('#preferedpartner').value=this.data.partner.description;
     }
 
+    this.setPartnersList();
+
+  }
+  getPartnerID(){
+    let pp=this.shadowRoot.querySelector('#preferedpartner').value;
+    let ppobj=this.data.sudoPartners.find(item=>item.description == pp);
+
+    if(ppobj) return ppobj.countryId;
+    return false;
+  }
+  setPartnersList(){
+    let options="";
+    for(let p of this.data.sudoPartners){
+      let selected="";
+      options+=`<option value="${p.name}">`;
+    }
+    this.shadowRoot.querySelector('#preferedpartnerList').innerHTML=options;
   }
 
   callAPI(method,url,data){
-    return new Promise((response,reject)=>{
+    return new Promise((resolve,reject)=>{
       let xhr=new XMLHttpRequest();
       xhr.open(method,url);
       xhr.setRequestHeader('content-type','application/json')

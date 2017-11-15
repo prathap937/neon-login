@@ -245,20 +245,12 @@ customElements.define('neon-header', class extends HTMLElement{
           background: #fff;
           color: #666;
         }
-        @media screen and (max-width: 620px) {
-          .time{
-            display:none;
-          }
-        }
         @media screen and (max-width: 1000px) {
           select.profile{
             width:auto;
           }
           .time{
-            width:120px;
-          }
-          .time > span{
-            padding:5px 10px;
+            display:none;
           }
         }
 
@@ -326,7 +318,7 @@ customElements.define('neon-header', class extends HTMLElement{
             <div class="modal-content">
               <div class="form-groub">
                 <input type="text" id="password"  >
-                <label for="password">Username</label>
+                <label for="password">Password</label>
                 <span class="err password" style="display:none">Invalid password</span>
               </div>
               <div class="form-groub">
@@ -363,9 +355,10 @@ customElements.define('neon-header', class extends HTMLElement{
 
   connectedCallback(){
     if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+    if( location.pathname.indexOf('launch.html') ) this.shadowRoot.querySelector('.logo a').href="#";
 
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
-    this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
+    this.url=location.origin;
 
     this.setTime();
     this.setUserName();
@@ -388,7 +381,7 @@ customElements.define('neon-header', class extends HTMLElement{
     });
 
     this.shadowRoot.querySelector('.changePasswordYes').addEventListener('click',(e)=>{ 
-      this.changePasswordCall("http://192.168.150.45"+"/neon-ws/changePassword");
+      this.changePasswordCall(this.url+"/neon-ws/changePassword");
     });
 
     this.shadowRoot.querySelector('.changePasswordNo').addEventListener('click',(e)=>{ 
@@ -425,31 +418,31 @@ customElements.define('neon-header', class extends HTMLElement{
     });
   }
   changePasswordCall(url){
-    this.changePassword(url).then(res=>{
-      this.shadowRoot.querySelector('.change-password-background').style.display="none";
-      console.log('password changed');
-    }).catch(err=>{
-      console.log('error in password change');
-    });
-  }
-  changePassword(url){
-    //http://192.168.150.45/neon-ws/changePassword
     let valid=this.checkValidation();
     if(valid){
-      return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.setRequestHeader("content-type","application/x-www-form-urlencoded");
-        xhr.onload = function () {
-          if (this.status >= 200 && this.status < 300) {
-            resolve(xhr.response);
-          } else { reject({status: this.status,statusText: xhr.statusText}); }
-        };
-        xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
-        xhr.send(`userId=${this.data.id}&currentPassword=${valid.password}&newPassword=${valid.newpassword}`);
+      this.changePassword(url,valid).then(res=>{
+        this.shadowRoot.querySelector('.change-password-background').style.display="none";
+        console.log('password changed');
+      }).catch(err=>{
+        this.shadowRoot.querySelector('.change-password-background').style.display="none";
+        console.log(err);
+        console.log('error in password change');
       });
     }
-    return false;
+  }
+  changePassword(url,valid){
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url);
+      xhr.setRequestHeader("content-type","application/x-www-form-urlencoded");
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send(`userId=${this.data.id}&currentPassword=${valid.password}&newPassword=${valid.newpassword}`);
+    });
   }
 
   checkValidation(){
@@ -495,26 +488,33 @@ customElements.define('neon-header', class extends HTMLElement{
   }
 
   setPartners(){
-    let options="";
-    for(let p of this.data.sudoPartners){
-      let selected="";
-      if(p.id === this.data.partnerId) selected="selected";
-      options+=`<option ${selected} value="${p.id}">${p.name}</option>`
-    }
-    this.shadowRoot.querySelector('.profile').innerHTML=options;
+    this.changePartnerCall( this.url +"/neon-ws/auth/status").then(res=>{
+      sessionStorage.setItem('login_response',res);
+      this.data=JSON.parse(sessionStorage.login_response);
+
+      let options="";
+      for(let p of this.data.sudoPartners){
+        let selected="";
+        if(p.id === this.data.partnerId) selected="selected";
+        options+=`<option ${selected} value="${p.id}">${p.name}</option>`
+      }
+      this.shadowRoot.querySelector('.profile').innerHTML=options;
+    });
   }
 
   changePartner(url,id){
-    this.changePartnerCall( url +"/neon-ws/changePartner?partnerId="+ id).then(res=>{
+    this.changePartnerCall(url+"/neon-ws/changePartner?partnerId="+id).then(res=>{
         let changeVal=JSON.parse(res);
         if(changeVal.partnerId== id){
           this.shadowRoot.querySelector('.change-partner-background').style.display="none";
+          this.setPartners();
           console.log('chagned partner');
         }else{
           console.log('error in change partner');
         }
     }).catch(err=>{
-      console.error(err);
+      this.shadowRoot.querySelector('.change-partner-background').style.display="none";
+      console.log('error in change partner');
     });
   }
 
@@ -533,7 +533,7 @@ customElements.define('neon-header', class extends HTMLElement{
   }
 
   logout(url){
-    return new Promise((response,reject)=>{
+    return new Promise((resolve,reject)=>{
       let xhr=new XMLHttpRequest();
       xhr.open('GET',url);
       xhr.onload = function () {
