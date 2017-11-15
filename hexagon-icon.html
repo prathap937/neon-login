@@ -80,6 +80,8 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   }
 
   connectedCallback(){
+    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+    
     let iconImage=this.getAttribute('icon-image');
     let iconLogoImage=this.getAttribute('icon-logo-image');
     let title=this.getAttribute('icon-title');

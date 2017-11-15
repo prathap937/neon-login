@@ -175,11 +175,50 @@ customElements.define('edit-profile', class extends HTMLElement{
   }
   
   connectedCallback(){ 
+    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
     this.fillProfileData();
 
+    this.shadowRoot.querySelector('.editProfileCancel').addEventListener('click', (e) => {
+      this.removeAttribute('show');
+    });
 
+    this.shadowRoot.querySelector('.editProfileSave').addEventListener('click', (e) => {
+      this.saveProfileValues();
+    });
+
+
+  }
+
+  saveProfileValues(){
+    let email=this.shadowRoot.querySelector('#email').value ;
+    let firstName=this.shadowRoot.querySelector('#firstName').value;
+    let lastName=this.shadowRoot.querySelector('#lastName').value;
+    let phone=this.shadowRoot.querySelector('#phone').value || null;
+    let localeId= 1;
+    let timezoneId=49;
+    let webLanguageId=1;
+    let userId=this.data.id;
+
+    this.callAPI('POST',this.url+"/neon-ws/saveUserProfile",
+      {
+        email:email,
+        firstName:firstName,
+        lastName:lastName,
+        phone:phone,
+        localeId:localeId,
+        timezoneId:timezoneId,
+        webLanguageId:webLanguageId,
+        userId:this.data.data
+      }).then(res=>{
+        console.log('success');
+        this.removeAttribute('show');
+      }).catch(err=>{
+        console.error('error in show profile');
+        this.removeAttribute('show');
+      });
   }
 
   fillProfileData(){
@@ -227,5 +266,22 @@ customElements.define('edit-profile', class extends HTMLElement{
     });
   }
 
-});
+  callAPI(method,url,data){
+    return new Promise((response,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open(method,url);
+      xhr.setRequestHeader('content-type','application/json')
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send(data);
+    });
+  }
+
+});  
+   
+
 </script>

@@ -1,0 +1,241 @@
+<script>
+customElements.define('edit-preferences', class extends HTMLElement{
+  constructor(){
+    super();
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        :host{
+          display:none;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: #0009;
+        }
+        :host([show]){
+          display:block;
+        }
+        .edit-preferences-background main{
+          height:400px;
+        }
+        .edit-preferences-background{
+          width: 450px;
+          margin: 0 auto;
+          top: 10%;
+          position: fixed;
+          background: #fff;
+          padding: 20px;
+          right: 0;
+          left: 0;
+        }
+        header{
+          margin-bottom: 20px;
+        }
+        header hr,footer hr{
+          width: 488px;
+          margin-left: -20px;
+        }
+        .form-groub {
+          padding-bottom: 5px;
+          position: relative;
+          height: 50px;
+        }
+        .form-groub label{
+          position: absolute;
+          top: 5px;
+          font-size: 0.9em;
+          color: #666;
+          transition: 0.2s all;
+        }
+        .form-groub input{
+          width: 100%;
+          height: 25px;
+          border: none;
+          border-bottom: 1px solid #7f7f7f;
+          font-size: 17px;
+          color: #444;
+        }
+        .form-groub input:focus{
+          outline:none; 
+        }
+        .form-groub input:focus + label{
+          top:-12px;
+          font-size:0.8em
+        }
+        .form-groub input.has-value +label{
+          top:-12px;
+          font-size:0.8em
+        }
+        .err{
+          font-size:0.8em;
+          color:red;
+          position: absolute;
+        }
+        .action-btn{
+          padding-top: 10px;
+          text-align: right;
+        }
+        .action-btn .editProfileCancel{
+          background-color:#fff;
+          color:#6e6e6e;
+        }
+        .action-btn button {
+          background-color: #006599;
+          color: #FFFFFF;
+          padding: 12px 25px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        label.rememberMe{
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 20px;
+        }
+        .show-clock{
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 20px;
+        }
+        .form-groub-checkbox{
+          margin-bottom: 30px;
+        }
+        .action-btn .cancel{
+          background-color:#fff;
+          color:#6e6e6e;
+        }
+      </style>
+
+      <div class="edit-preferences">
+        <div class="edit-preferences-background">
+          <section class="edit-preferences">
+            <header><strong>Preferences</strong><hr></header>
+            <main>
+              <div class="form-groub-checkbox">
+                <div>
+                <label for="rememberMe" class="rememberMe">Show Clock On Screen</label>
+                <input type="radio" id="showClock" name="showClock" value="yes" checked> <label for="showClock" class="show-clock">Yes</label>
+                <input type="radio" id="showClock1" name="showClock" value="no"> <label for="showClock1" class="show-clock">No</label>
+                </div>
+              </div>
+              <div class="form-groub w50l">
+                <input type="text" id="preferedpartner" class="has-value">
+                <label for="preferedpartner">Prefered Partner</label>
+                <span class="err preferedpartner" style="display:none">Prefered Partner</span>
+              </div> 
+              <div class="form-groub-checkbox">
+                <div>
+                <label for="rememberMe" class="rememberMe">Preferred Home Page</label>
+                <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> Default</label>
+                <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> Specific Page</label>
+                </div>
+              </div>
+            </main>
+            <footer> 
+              <hr>
+              <div class="action-btn">
+                <button class="editpreferencesCancel cancel">Cancel</button>
+                <button class="editpreferencesSave">Save</button>
+              </div>
+            </footer>
+          </section>
+        </div>
+        
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    /*for input focus effect*/
+    this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
+      input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
+        this.checkValidation();
+      });
+    });
+
+    this.shadowRoot.querySelector('.editpreferencesCancel').addEventListener('click', (e) => {
+      this.removeAttribute('show');
+    });
+
+    this.shadowRoot.querySelector('.editpreferencesSave').addEventListener('click', (e) => {
+      this.savePreferences();
+    });
+
+  }
+
+  connectedCallback(){
+    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+      
+    this.data=JSON.parse(sessionStorage.getItem('login_response'));
+    this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
+    this.setData();
+
+
+  }
+
+  savePreferences(){
+    let showClock=(this.shadowRoot.querySelector('#showClock').checked) ? "true" : "false";
+    let preferredPartnerId="";
+    let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "/" : "";
+
+    this.callAPI('POST',this.url+"/neon-ws/saveUserPreference",
+      {
+        isClockActive:showClock,
+        preferredHomePage:preferredHomePage,
+        preferredPartnerId:preferredPartnerId,
+        userId:this.data.id
+      }).then(res=>{
+        console.log('success');
+        this.removeAttribute('show');
+      }).catch(err=>{
+        console.error('error in show preferences');
+        this.removeAttribute('show');
+      });
+  }
+
+  setData(){
+    if(this.data.preferences.isClockActive){
+      this.shadowRoot.querySelector('#showClock').checked=true;
+      this.shadowRoot.querySelector('#showClock1').checked=false;
+    }else{
+      this.shadowRoot.querySelector('#showClock1').checked=true;
+      this.shadowRoot.querySelector('#showClock').checked=false;
+    }
+
+    if(this.data.preferences.landingPage == ""){
+      this.shadowRoot.querySelector('#homePage').checked=true;
+      this.shadowRoot.querySelector('#homePage1').checked=false;
+    }else{
+      this.shadowRoot.querySelector('#homePage1').checked=true;
+      this.shadowRoot.querySelector('#homePage').checked=false;
+    }
+
+    if(this.data.preferences.landingPartnerId == ""){
+      this.shadowRoot.querySelector('#preferedpartner').value="";
+    }else{
+      this.shadowRoot.querySelector('#preferedpartner').value=this.data.partner.description;
+    }
+
+  }
+
+  callAPI(method,url,data){
+    return new Promise((response,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open(method,url);
+      xhr.setRequestHeader('content-type','application/json')
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send(data);
+    });
+  }
+
+});
+</script>

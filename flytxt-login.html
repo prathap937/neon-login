@@ -312,6 +312,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
 
   }
   connectedCallback(){
+    
     this.checkValidation();
     this.shadowRoot.querySelector('#login-submit').addEventListener('click', (e) => {
       let val=this.checkValidation();

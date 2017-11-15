@@ -1,4 +1,7 @@
 
+<link rel="import" href="./edit-preferences.html">
+<link rel="import" href="./edit-profile.html">
+
 <script>
 customElements.define('neon-header', class extends HTMLElement{
   constructor(){
@@ -177,8 +180,11 @@ customElements.define('neon-header', class extends HTMLElement{
           box-shadow: 1px 1px 19px #0009;
           border-radius: 2px;
           max-width: 90%;
-          width: 50%;
-          margin: 0 22%;
+          width: 350px;
+          right: 0;
+          left: 0;
+          margin-right: auto;
+          margin-left: auto;
         }
         .change-password-background{
           display:none;
@@ -239,6 +245,15 @@ customElements.define('neon-header', class extends HTMLElement{
           background: #fff;
           color: #666;
         }
+        @media screen and (max-width: 1000px) {
+          select.profile{
+            width:auto;
+          }
+          .time{
+            display:none;
+          }
+        }
+
       </style>
 
       <div id="neon-header">
@@ -276,8 +291,8 @@ customElements.define('neon-header', class extends HTMLElement{
                 </span>
                 <ul class="down">
                   <li><a href="#" class="changePasswordModal">Change Password</a></li>
-                  <li><a href="#">Edit Profile</a></li>
-                  <li><a href="#">preferences</a></li>
+                  <li><a href="#" class="editProfile">Edit Profile</a></li>
+                  <li><a href="#" class="editPreferences">preferences</a></li>
                   <li><a href="#" class="logout"> Logout</a></li>
                 </ul>
               </div>
@@ -343,8 +358,7 @@ customElements.define('neon-header', class extends HTMLElement{
   // }
 
   connectedCallback(){
-    if(!sessionStorage.getItem('login_response')) 
-      location.href="/index.html";
+    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
 
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=(location.href.indexOf("http://127")!=-1&&location.href.indexOf("http://loca")!=-1)?location.href:"http://http://192.168.150.45";
@@ -370,12 +384,26 @@ customElements.define('neon-header', class extends HTMLElement{
     });
 
     this.shadowRoot.querySelector('.changePasswordYes').addEventListener('click',(e)=>{ 
-      this.changePassword("http://192.168.150.45"+"/neon-ws/changePassword",);
+      this.changePasswordCall("http://192.168.150.45"+"/neon-ws/changePassword");
     });
 
     this.shadowRoot.querySelector('.changePasswordNo').addEventListener('click',(e)=>{ 
       this.shadowRoot.querySelector('.change-password-background').style.display="none";
     });
+
+    this.shadowRoot.querySelector('.editProfile').addEventListener('click',(e)=>{ 
+      let ep=document.createElement('edit-profile');
+      ep.setAttribute('show', "");
+      document.body.appendChild(ep);
+    });
+
+    this.shadowRoot.querySelector('.editPreferences').addEventListener('click',(e)=>{ 
+      let ep=document.createElement('edit-preferences');
+      ep.setAttribute('show', "");
+      document.body.appendChild(ep);
+    });
+
+
     
     this.shadowRoot.querySelector('.logout').addEventListener('click',(e)=>{ 
       this.logout(this.url+'/neon-ws/logout').then(res=>{
@@ -391,10 +419,15 @@ customElements.define('neon-header', class extends HTMLElement{
         }
       });
     });
-
-
   }
-
+  changePasswordCall(url){
+    this.changePassword(url).then(res=>{
+      this.shadowRoot.querySelector('.change-password-background').style.display="none";
+      console.log('password changed');
+    }).catch(err=>{
+      console.log('error in password change');
+    });
+  }
   changePassword(url){
     //http://192.168.150.45/neon-ws/changePassword
     let valid=this.checkValidation();
@@ -471,6 +504,7 @@ customElements.define('neon-header', class extends HTMLElement{
     this.changePartnerCall( url +"/neon-ws/changePartner?partnerId="+ id).then(res=>{
         let changeVal=JSON.parse(res);
         if(changeVal.partnerId== id){
+          this.shadowRoot.querySelector('.change-partner-background').style.display="none";
           console.log('chagned partner');
         }else{
           console.log('error in change partner');
