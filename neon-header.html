@@ -352,10 +352,6 @@ customElements.define('neon-header', class extends HTMLElement{
       });
     });
   }
-  
-  // static observedAttributes(){
-  //   return ['user-name'];
-  // }
 
   connectedCallback(){
     if(!sessionStorage.getItem('login_response')) location.href="/index.html";
