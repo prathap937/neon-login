@@ -7,7 +7,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     template.innerHTML = ` 
 <style>
   #hexagon-icon{
-    width:180px;
+    width:137px;
     position:relative;
     margin:0 auto;
     cursor:pointer;
@@ -25,21 +25,22 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     text-align:center;
   }
   #hexagon-icon .img.below img{
-    width:130px;
+    width:100px;
     margin:0 auto 20px;
   }
   .title {
     position: absolute;
     text-align: center;
-    font-size: 1em;
+    font-size: 10pt;
     width: 130px;
-    top: 80px;
+    top:56px;
     left: 0;
     font-weight: bold !important;
     right: 0;
     margin: 0 auto;
   }
   .header-info{
+    display:none;
     font-size: 0.8em;
     color: #fff;
     text-align: center;
@@ -49,11 +50,11 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   }
   .icon-img{
     position: absolute;
-    top: 35px;
-    right: 0;
+    top: 20px;
+    right: 0;   
     left:0;
     margin: 0 auto;
-    width: 35px;
+    width: 29px;
   }
   .title.below{
     position: static;
@@ -61,7 +62,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     margin-bottom: 15px;
   }
   .img.below{
-    width: 130px;
+    width: 70px;
     margin: 0 auto;
   }
 </style>

@@ -11,8 +11,8 @@ customElements.define('neon-header', class extends HTMLElement{
     template.innerHTML = ` 
       <style>
         header.menu-header {
-          background: rgba(0,0,0,.75);
-          height: 80px;
+          background: rgba(0,0,0,.55);
+          height: 70px;
           width: 100%;
         }
         .flex-container{
@@ -26,8 +26,8 @@ customElements.define('neon-header', class extends HTMLElement{
           width: 122px;
           align-self: center;
           background: #000;
-          padding: 17px 10px 10px 7px;
-          height: 80px;
+          padding: 8px 10px 10px 7px;
+          height: 70px;
           box-sizing: border-box;
         }
         .logo img{
@@ -507,7 +507,7 @@ customElements.define('neon-header', class extends HTMLElement{
   setUserName(){
 
     // this.shadowRoot.querySelector('.usrname').innerText= this.data.firstName+' '+this.data.lastName;
-    this.shadowRoot.querySelector('.usrname').innerText= Admin;
+    this.shadowRoot.querySelector('.usrname').innerText= 'Admin';
   }
 
   setTime(){
