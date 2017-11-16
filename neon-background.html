@@ -88,7 +88,7 @@ customElements.define('neon-background', class extends HTMLElement{
     var heximg=self.shadowRoot.querySelector('.hex-top span').innerHTML;
     var res="";
     for(var j=0; j< 5 ; j++){
-      res+=`<div class="row rowno-${j}">`;
+      res+=`<div class="row rowno-${j}" style="width:${innerWidth+125+30+30}px">`;
       let rowLenght=Math.floor(window.innerWidth/45);
       for(var i=1; i <= rowLenght+1; i++){
         let style='';
@@ -106,7 +106,7 @@ customElements.define('neon-background', class extends HTMLElement{
     var hexbot=self.shadowRoot.querySelector('.hex-bot');
     var res="";
     for(var j=0; j< 7 ; j++){
-      res+=`<div class="row rowno-${j}">`;
+      res+=`<div class="row rowno-${j}" style="width:${innerWidth+125+30+30}px">`;
       let rowLenght=Math.floor(window.innerWidth/45);
       for(var i=1; i <= rowLenght+1; i++){
         let style='';
