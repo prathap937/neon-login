@@ -382,7 +382,7 @@ customElements.define('neon-header', class extends HTMLElement{
   }
 
   connectedCallback(){
-    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+    // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
     if( location.pathname.indexOf('launch.html') ) this.shadowRoot.querySelector('.logo a').href="#";
 
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
@@ -436,7 +436,7 @@ customElements.define('neon-header', class extends HTMLElement{
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
           location.href=this.getAttribute('login-url');
         }
-        location.href="/index.html";
+        // location.href="/index.html";
       }).catch(err=>{
         if(sessionStorage.login_response) delete sessionStorage.login_response
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
