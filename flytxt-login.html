@@ -329,7 +329,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
             sessionStorage.setItem('login_response', res ? res : false );
 
             this.shadowRoot.querySelector('.err.login').style.display="none";
-            location.href=this.getAttribute('redirect-url') || '/index.html';
+            // location.href=this.getAttribute('redirect-url') || '/index.html';
           })
           .catch((e)=>{
              this.shadowRoot.querySelector('.err.login').style.display="block";

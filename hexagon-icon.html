@@ -85,7 +85,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   }
 
   connectedCallback(){
-    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+    // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
     
     let iconImage=this.getAttribute('icon-image');
     let iconLogoImage=this.getAttribute('icon-logo-image');
@@ -116,7 +116,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     }
 
     this.addEventListener('click', (e) =>{
-      if(href && href.length > 3) location.href=href;
+      // if(href && href.length > 3) location.href=href;
     });
   }
 
