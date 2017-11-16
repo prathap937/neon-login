@@ -7,35 +7,38 @@ customElements.define('flytxt-login', class extends HTMLElement{
     template.innerHTML = ` 
       <style>
         .login{
-          width:375px;
+          width:410px;
           height:auto;
           position: relative;
         }
         .login-form{
           position: absolute;
           top: 100px;
-          left: 25px;
+          left: 0px;
+          right:5px;
           width: 325px;
+          margin:0 auto;
         }
         .images{
           overflow:hidden;  
-          margin-bottom: 20px;
+          margin-bottom: 25px;
           padding-bottom:0;
         }
         .left-img{
-          width:60px;
+          width:80px;
           float:left
         }
         .right-img{
-          width:70px;
-          float:right;
+          width: 100px;
+          float: right;
+          margin-top: 10px;
         }
         .right-img img{
           height: 16px;
           margin-top: 10px;
         }
         .form-groub {
-          padding-bottom: 15px;
+          padding-bottom: 20px;
           position: relative;
           height: 40px;
         }
@@ -52,7 +55,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
         }
         .form-groub label{
           position: absolute;
-          top: 10px;
+          top: 5px;
           font-size: 1em;
           color: #666;
           transition: 0.2s all;
@@ -194,7 +197,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
           vertical-align: middle;
         }
         .pb0{
-          padding-bottom:0 !important;
+          padding-bottom:15px !important;
         }
       </style>
 
