@@ -80,6 +80,39 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   #hexagon-icon .img img{
     width:230px;
   }
+
+  @media screen and (min-width: 1367px) {
+    #hexagon-icon {
+      width: 175px;
+    }
+    .title {
+      font-size: 13pt;
+      top: 75px;
+    }
+    .icon-img {
+      top: 26px;
+      width: 37px;
+      height: 37px;
+    }
+    .header-info{
+      letter-spacing: 1px;
+      font-size: 1em;
+      margin-left: -47px;
+      width: 270px;
+    }
+    .img.below {
+        width: 90px;
+        margin: 0 auto 7px;
+    }
+    #hexagon-icon.below {
+        width: 230px;
+    }
+    #hexagon-icon.below .header-info{
+      width: 270px;
+      margin: 0px auto 0 -22px;
+    }
+
+  }
 </style>
 
       <div id="hexagon-icon">
