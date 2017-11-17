@@ -15,12 +15,6 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   #hexagon-icon.below{
     width:210px;
   }
-  #hexagon-icon.below .header-info{
-    color: #8d8f95;
-  }
-  #hexagon-icon .img img{
-    width:230px;
-  }
   .img{
     text-align:center;
   }
@@ -31,22 +25,34 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   .title {
     position: absolute;
     text-align: center;
-    font-size: 12pt;
+    font-size: 11pt;
     width: 130px;
-    bottom:22px;
+    top:58px;
     left: 0;
     font-weight: bold !important;
     right: 0;
     margin: 0 auto;
   }
   .header-info{
-    display:none;
+    position: absolu+e;
+    top: 119px;
     font-size: 0.8em;
     color: #fff;
     text-align: center;
     margin-top: 10px;
     line-height: 20px;
     font-weight: bold !important;
+    width:200px;
+    margin-left: -36px;
+    visibility: hidden;
+    opacity: 0;
+    transition:opacity 1s linear;
+  }
+
+  .background-icon:hover + .header-info{
+    visibility: visible;
+    transition-delay:.5s;
+    opacity: 1;
   }
   .icon-img{
     position: absolute;
@@ -60,11 +66,19 @@ customElements.define('hexagon-icon', class extends HTMLElement{
   .title.below{
     position: static;
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
   }
   .img.below{
     width: 70px;
     margin: 0 auto;
+  }
+  #hexagon-icon.below .header-info{
+    color: #8d8f95;
+    width: 100%;
+    margin: 0px auto 0;
+  }
+  #hexagon-icon .img img{
+    width:230px;
   }
 </style>
 
