@@ -54,7 +54,11 @@ customElements.define('neon-background', class extends HTMLElement{
         .hex-bot .row:nth-child(odd){
           margin-left: 23.5px;
         }
-        .hex-top span svg, .hex-bot span svg{
+        .hex-top span svg{
+          width:45px;
+          margin-left: -4px;
+        }
+        .hex-bot span svg{
           width:45px;
         }
         .hex-top2 span svg{
@@ -72,7 +76,7 @@ customElements.define('neon-background', class extends HTMLElement{
         </div>
         <div class="hex-top2" style="display:none">
           <span>
-            <svg version="1.1" id="Layer_1" width="55px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 39 45" style="enable-background:new 0 0 39 45;" xml:space="preserve"><polygon class="st011" points="1.2,11.8 19.5,1.2 37.9,11.7 38,32.9 19.6,43.6 1.2,33 "/></svg>          
+            <svg version="1.1" id="Layer_1" width="55px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 39 45" style="margin-left: -4px;enable-background:new 0 0 39 45;" xml:space="preserve"><polygon class="st011" points="1.2,11.8 19.5,1.2 37.9,11.7 38,32.9 19.6,43.6 1.2,33 "/></svg>          
           </span>
         </div>
         <div class="hex-bot"></div>
