@@ -22,6 +22,29 @@
 <body>
   <neon-background></neon-background>
   <login-page ></login-page>
+  <h3 class="error" style="display: none;">
+    Please use the latest version of GOOGLE CHROME to open this page!!
+  </h3>
+  <style type="text/css"> 
+    .error{
+      display: block;
+      text-align: center;
+      margin-top: 15%;
+      border: 1px solid rgb(204, 204, 204);
+      width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 50px;
+      box-shadow: 1px 1px 13px rgb(0, 0, 0);
+    }
+  </style>
+  <script>
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
+    if(!isChrome){
+      alert("Please use the latest version of GOOGLE CHROME to open this page!!");
+      document.querySelector('.error').style.display="block";
+    }
+  </script>
 </body>
 </html>
