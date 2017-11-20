@@ -64,6 +64,18 @@ customElements.define('neon-background', class extends HTMLElement{
         .hex-top2 span svg{
           width:49px;
         }
+        @media screen and (min-width: 1367px) {
+          .hex-top span svg{
+            width:50px;
+            margin-left: -5.5px;
+          }
+          .hex-bot span svg{
+            width:50px;
+          }
+          .hex-top2 span svg{
+            width:49px;
+          }
+        }
         .st0{fill:#1D2132;}.st1{fill:url(#SVGID_1_);}.st2{opacity:0.25;}.st3{opacity:0.2;fill:#688EC4;stroke:#FFFFFF;stroke-miterlimit:10;}.st4{opacity:0.1;fill:#688EC4;stroke:#FFFFFF;stroke-miterlimit:10;}.st5{opacity:5.000000e-02;fill:#688EC4;stroke:#FFFFFF;stroke-miterlimit:10;}.st6{opacity:5.000000e-02;fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st7{opacity:5.000000e-02;fill:#688EC4;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st8{opacity:0.15;fill:#688EC4;stroke:#FFFFFF;stroke-miterlimit:10;}.st9{opacity:0.25;fill:#688EC4;stroke:#FFFFFF;stroke-miterlimit:10;}.st10{opacity:0.1;fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st11{opacity:0.1;fill:#688EC4;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st12{fill:#FFFFFF;}.st13{fill:none;stroke:#606060;stroke-miterlimit:10;}.st14{opacity:0.5;fill:#CECECE;}.st15{fill:#F68E28;}.st16{fill:none;}.st17{enable-background:new;}.st18{fill:#606060;}.st19{fill:url(#SVGID_6_);}.st20{opacity:5.000000e-02;}.st21{fill:#688EC4;}.st22{opacity:3.000000e-02;fill:#688EC4;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st23{opacity:3.000000e-02;fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}.st24{fill:#4D4D4D;}.st25{fill:#F2653E;}.st26{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}.st27{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;stroke-dasharray:3,3;}.st28{fill:#EF3A39;}.st29{fill:#4A78BB;}.st30{fill:url(#SVGID_7_);}.st31{fill:url(#SVGID_8_);}.st32{fill:url(#SVGID_9_);}.st33{fill:url(#SVGID_10_);}
         .st011{opacity:0.1;fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
       </style>
@@ -113,9 +125,12 @@ customElements.define('neon-background', class extends HTMLElement{
     var res="";
     var toprow=5;
     var botrow=5;
+    var hexWidth=45;
+
     if(innerWidth > 1370){
       toprow=6;
       botrow=5;
+      hexWidth=50;
       skip={
         '4':[10,11,12,13,16,17,18,24,27,29,30,31,36,41],
         '5':[10,11,12,13,16,17,18,24,27,29,30,33,34,36,38,40,41,44],
@@ -127,7 +142,7 @@ customElements.define('neon-background', class extends HTMLElement{
       
     for(var j=0; j< toprow ; j++){
       res+=`<div class="row rowno-${j}" style="width:${innerWidth+185}px">`;
-      let rowLenght=Math.floor(window.innerWidth/45);
+      let rowLenght=Math.floor(window.innerWidth/hexWidth);
       for(var i=1; i <= rowLenght+1; i++){
         let style='';
         if(i % 2 == 0){
@@ -156,7 +171,7 @@ customElements.define('neon-background', class extends HTMLElement{
     var res="";
     for(var j=0; j< botrow ; j++){
       res+=`<div class="row rowno-${j}" style="width:${innerWidth+125+30+30+50}px">`;
-      let rowLenght=Math.floor(window.innerWidth/45);
+      let rowLenght=Math.floor(window.innerWidth/hexWidth);
       for(var i=1; i <= rowLenght+1; i++){
         let style='';
         // if(bskip[j+1]){
