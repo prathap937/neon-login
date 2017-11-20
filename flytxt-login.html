@@ -322,12 +322,14 @@ customElements.define('flytxt-login', class extends HTMLElement{
       let val=this.checkValidation();
       if( val !== false){
         let url=this.hasAttribute('login-url') ? this.getAttribute('login-url') :'http://192.168.150.45/neon-ws/login';
-        let method="post";
-        this.loginCheck(url,method,val.username,val.password,val.rememberMe)
+        if(!url) url=location.origin;
+        this.loginCheck(url,"POST",val.username,val.password,val.rememberMe)
           .then((res)=>{
-            var res=
             sessionStorage.setItem('login_response', res ? res : false );
-
+            var res=JSON.parse(res);
+            if(res.preferences.landingPage && res.preferences.landingPage != "" && res.preferences.landingPage != "/"){
+              location.href=res.preferences.landingPage;
+            }
             this.shadowRoot.querySelector('.err.login').style.display="none";
             location.href=this.getAttribute('redirect-url') || '/index.html';
           })

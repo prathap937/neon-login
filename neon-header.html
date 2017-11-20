@@ -39,6 +39,7 @@ customElements.define('neon-header', class extends HTMLElement{
           flex: 5;
           align-self: center;
           position: relative;
+          padding-right: 10px;
         }  
         select.profile:focus{
           outline: none;
@@ -66,20 +67,21 @@ customElements.define('neon-header', class extends HTMLElement{
           background-size: 25px;
         }
         .time {
-          width: 130px;
           text-align: center;
           align-self: center;
           color: #fff;
         }
         .time > span {
           padding: 5px 20px;
-          border-right: 2px dashed #fff;
           border-left: 2px dashed #fff;
         }
         .notification {
           width: 35px;
           text-align: center;
           align-self: center;
+          height: 31px;
+          border-left: 2px dashed #fff;
+          padding-left: 10px;
         }
         .user-options {
           min-width: 220px;
@@ -397,6 +399,11 @@ customElements.define('neon-header', class extends HTMLElement{
     // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
     if( location.pathname.indexOf('launch.html') ) this.shadowRoot.querySelector('.logo a').href="#";
 
+    this.callApi("http://192.168.150.27/neon-ws/auth/status").then(res=>{
+      console.log(res);
+    }).catch(err=>{console.log(err);});
+
+
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=location.origin;
 
@@ -454,6 +461,7 @@ customElements.define('neon-header', class extends HTMLElement{
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
           location.href=this.getAttribute('login-url');
         }
+        location.href="/index.html";
       });
     });
   }
@@ -526,9 +534,14 @@ customElements.define('neon-header', class extends HTMLElement{
   }
 
   setTime(){
-    let date=new Date();
-    let time=((date.getHours() < 12) ? date.getHours() : date.getHours() - 12)+":"+date.getMinutes()+" "+((date.getHours() < 12) ? "AM" : "PM");
-    this.shadowRoot.querySelector('.time span').innerText=time;
+    if(this.data.preferences.isClockActive){
+      let date=new Date();
+      let time=((date.getHours() < 12) ? date.getHours() : date.getHours() - 12)+":"+date.getMinutes()+" "+((date.getHours() < 12) ? "AM" : "PM");
+      this.shadowRoot.querySelector('.time span').innerText=time;
+      this.shadowRoot.querySelector('.time').style.display="block";
+    }else{
+      this.shadowRoot.querySelector('.time').style.display="none";
+    }
   }
 
   setPartners(){
@@ -590,6 +603,21 @@ customElements.define('neon-header', class extends HTMLElement{
 
     });
   }
+
+  callApi(url){
+    return new Promise((resolve,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open('GET',url);
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send();
+    });
+  }
+
 
 });
 
