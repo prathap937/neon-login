@@ -446,13 +446,13 @@ customElements.define('neon-header', class extends HTMLElement{
       this.logout(this.url+'/neon-ws/logout').then(res=>{
         if(sessionStorage.login_response) delete sessionStorage.login_response
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
-          // location.href=this.getAttribute('login-url');
+          location.href=this.getAttribute('login-url');
         }
-        // location.href="/index.html";
+        location.href="/index.html";
       }).catch(err=>{
         if(sessionStorage.login_response) delete sessionStorage.login_response
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
-          // location.href=this.getAttribute('logout-url');
+          location.href=this.getAttribute('login-url');
         }
       });
     });
@@ -517,9 +517,12 @@ customElements.define('neon-header', class extends HTMLElement{
       return false;
   }
   setUserName(){
-
-    // this.shadowRoot.querySelector('.usrname').innerText= this.data.firstName+' '+this.data.lastName;
-    this.shadowRoot.querySelector('.usrname').innerText= 'Admin';
+    if(this.data){
+      this.shadowRoot.querySelector('.usrname').innerText= this.data.firstName+' '+this.data.lastName;
+    }else{
+      this.shadowRoot.querySelector('.usrname').innerText= 'Admin';
+      console.log('unable to get username');
+    }
   }
 
   setTime(){

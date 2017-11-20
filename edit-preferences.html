@@ -176,11 +176,11 @@ customElements.define('edit-preferences', class extends HTMLElement{
       sessionStorage.setItem('login_response',res);
       this.data=JSON.parse(sessionStorage.getItem('login_response'));
       this.setData();
+    })
+    .catch(err=>{  
+      console.log('error in get preferences'+err);
+      this.data=JSON.parse(sessionStorage.getItem('login_response'));
     });
-    // .catch(err=>{  
-    //   console.log('error in get preferences'+err);
-    //   this.data=JSON.parse(sessionStorage.getItem('login_response'));
-    // })
   }
 
   savePreferences(){
