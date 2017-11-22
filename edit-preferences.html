@@ -108,6 +108,60 @@ customElements.define('edit-preferences', class extends HTMLElement{
           background-color:#fff;
           color:#6e6e6e;
         }
+        .page-container{
+          display:none;
+          margin:15px 0;
+          height: 240px;
+          overflow: auto;
+          font-size: 11pt;
+          border:1px solid #666;
+        }
+        .page{
+          display: block;
+          height: 23px;
+          font-size: 11pt;
+          padding: 2px;
+        }
+        .page input{
+          display:none;
+          -webkit-appearance: checkbox;
+          box-sizing: border-box;
+          float: right;   
+          padding-right: 50px;
+          margin: 5px 20px 0 0;
+          transform: scale(1.3);
+          cursor:pointer;
+        }
+        .page input:checked{
+          display:block;
+        }
+        .page:hover{
+          background: #E0E0E0;
+        }
+        .page:hover input{
+          display:block;
+        }
+        .page span{
+          float: left;
+        }
+        .page.deep-2{
+          padding-left:20px;
+        }
+        .page.deep-3{
+          padding-left:40px;
+        }
+        .page.deep-4{
+          padding-left:60px;
+        }
+        .page.deep-5{
+          padding-left:80px;
+        }
+        .page.deep-6{
+          padding-left:100px;
+        }
+        .selected-page{
+          font-size:11px;
+        }
       </style>
 
       <div class="edit-preferences">
@@ -132,8 +186,11 @@ customElements.define('edit-preferences', class extends HTMLElement{
                 <div>
                 <label for="rememberMe" class="rememberMe">Preferred Home Page</label>
                 <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> Default</label>
-                <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> Specific Page</label>
+                  <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> Specific Page</label>
+                  <span class="selected-page">(Please select the page)</span>
                 </div>
+                <div class="page-container">
+                </pages>
               </div>
             </main>
             <footer> 
@@ -164,6 +221,7 @@ customElements.define('edit-preferences', class extends HTMLElement{
     this.shadowRoot.querySelector('.editpreferencesSave').addEventListener('click', (e) => {
       this.savePreferences();
     });
+    
 
   }
 
@@ -176,18 +234,95 @@ customElements.define('edit-preferences', class extends HTMLElement{
       sessionStorage.setItem('login_response',res);
       this.data=JSON.parse(sessionStorage.getItem('login_response'));
       this.setData();
-    })
-    .catch(err=>{  
+    }).catch(err=>{  
       console.log('error in get preferences'+err);
       this.data=JSON.parse(sessionStorage.getItem('login_response'));
     });
+
+    this.fillPages();
+
+    Array.from(this.shadowRoot.querySelectorAll('input[name="homePage"]')).forEach(i=>{
+      i.addEventListener('change', (e) => {
+        if(e.target.value == "yes"){
+          this.shadowRoot.querySelector('.page-container').style.display="none";
+        }else{
+          this.shadowRoot.querySelector('.page-container').style.display="block";
+        }
+      });
+    });
+
+    this.shadowRoot.querySelector('.page-container').addEventListener('click', (e) => {
+      // e.stopPropagation();
+      let pageval=0;
+      if(e.target.value && e.target.value != "undefined" ){
+        e.target.checked=true;
+        this.shadowRoot.querySelector('.selected-page').innerHTML=`(${e.target.value})`;
+      }else if(e.target.nextElementSibling && e.target.nextElementSibling.value && e.target.nextElementSibling.value != "undefined"){
+        e.target.checked=true;
+        this.shadowRoot.querySelector('.selected-page').innerHTML=`(${e.target.nextElementSibling.value})`;
+        console.log(e.target.nextElementSibling.value);
+      }else if(e.target.lastElementChild && e.target.lastElementChild.value && e.target.lastElementChild.value != "undefined"){
+        e.target.checked=true;
+        this.shadowRoot.querySelector('.selected-page').innerHTML=`(${e.target.lastElementChild.value})`;
+        console.log(e.target.lastElementChild.value );
+      }else{
+        e.preventDefault();
+      }
+
+      Array.from(this.shadowRoot.querySelectorAll('.page input')).forEach(item=>{
+        if(item.checked){
+          item.parentElement.style.background="#E0E0E0";
+        }else{
+          item.parentElement.style.background="";
+        }
+      });
+    });
+
+    
   }
 
+  showPages(page,i){
+    for(let p of page.children){
+      if(p.children){
+        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${p.name}<input type="radio" name="page" value="${p.path}"/></label>`;
+        i++;
+        this.showPages(p,i);
+      }else{
+        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${p.name}<input type="radio" name="page" value="${p.path}"/></label>`;
+      }
+    }
+  }
+  fillPages(){
+    this.callAPI('GET', this.url+'/json/site-map.json').then(res=>{
+      res=JSON.parse(res);
+      console.log(res);
+      this.pageData="";
+      this.pageData+=`<label class="page deep-0" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${res.name}<input type="radio" name="page" value="${res.path}"/></label>`;
+      this.showPages(res,1);
+      this.shadowRoot.querySelector('.page-container').innerHTML=this.pageData;
+    });
+
+    setTimeout(()=>{
+      this.data=JSON.parse(sessionStorage.login_response);
+      if(this.data.preferences.landingPage != ""){
+        this.shadowRoot.querySelector('.selected-page').innerHTML=`(${this.data.preferences.landingPage})`;
+        this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').checked=true;
+        this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').parentElement.style.background="#E0E0E0";
+      }
+    },100);
+    console.log(this.data);
+  }
   savePreferences(){
     let valid=this.checkValidation();
     if(valid){
       let showClock=(this.shadowRoot.querySelector('#showClock').checked) ? "true" : "false";
-      let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "/" : "";
+      let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "" : "/";
+      if(this.shadowRoot.querySelector('#homePage1').checked){
+        if(Array.from(this.shadowRoot.querySelectorAll('.page input')).find(i=>i.checked==true).value){
+          preferredHomePage=Array.from(this.shadowRoot.querySelectorAll('.page input')).find(i=>i.checked==true).value;
+        }
+      }
+
       let data={
         isClockActive : showClock,
         preferredHomePage : preferredHomePage,
@@ -227,28 +362,32 @@ customElements.define('edit-preferences', class extends HTMLElement{
       this.shadowRoot.querySelector('#showClock').checked=false;
     }
 
-    if(this.data.preferences.landingPage == ""){
+    if(this.data.preferences.landingPage == "" || this.data.preferences.landingPage == null){
       this.shadowRoot.querySelector('#homePage').checked=true;
       this.shadowRoot.querySelector('#homePage1').checked=false;
     }else{
-      this.shadowRoot.querySelector('#homePage1').checked=true;
       this.shadowRoot.querySelector('#homePage').checked=false;
+      this.shadowRoot.querySelector('#homePage1').checked=true;
+      this.shadowRoot.querySelector('.page-container').style.display="block";
+      
     }
 
     if(this.data.preferences.landingPartnerId == ""){
       this.shadowRoot.querySelector('#preferedpartner').value="";
     }else{
-      this.shadowRoot.querySelector('#preferedpartner').value=this.data.partner.description;
+      this.shadowRoot.querySelector('#preferedpartner').value=this.data.sudoPartners.filter(i=> i.id ==this.data.preferences.landingPartnerId)[0].name;
     }
+
+    
 
     this.setPartnersList();
 
   }
   getPartnerID(){
     let pp=this.shadowRoot.querySelector('#preferedpartner').value;
-    let ppobj=this.data.sudoPartners.find(item=>item.description == pp);
+    let ppobj=this.data.sudoPartners.find(item=>item.name == pp);
 
-    if(ppobj) return ppobj.countryId;
+    if(ppobj) return ppobj.id;
     return false;
   }
   setPartnersList(){
