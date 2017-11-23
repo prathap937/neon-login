@@ -361,7 +361,7 @@ customElements.define('neon-header', class extends HTMLElement{
           }       
         }
       </style>
-      <edit-profile show></edit-profile>
+      <neon-notification show></neon-notification>
       <div id="neon-header">
         <header class="menu-header flex-container">
             <div class="logo">
@@ -675,7 +675,7 @@ customElements.define('neon-header', class extends HTMLElement{
         this.shadowRoot.querySelector('.notification-count').style.display="none";
       }
 
-      let notes="",i=1;
+      let notes="No Notifications!",i=1;
       for(let note of res){
         if(i < 4){
           notes+=`<div class="notifications"><div class="notification-desc">
