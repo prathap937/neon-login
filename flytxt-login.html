@@ -229,7 +229,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
             </div>
           </div>
           <div class="form-groub">
-            <input type="text" id="username" value="flyops@flytxt.com" >
+            <input type="text" id="username" value="kaviya.nair@flytxt.com" >
             <label for="username">Username</label>
             <span class="err username" style="display:none">Invalid Username</span>
           </div>  
@@ -328,7 +328,8 @@ customElements.define('flytxt-login', class extends HTMLElement{
             sessionStorage.setItem('login_response', res ? res : false );
             var res=JSON.parse(res);
             if(res.preferences.landingPage && res.preferences.landingPage != "" && res.preferences.landingPage != "/"){
-              location.href=res.preferences.landingPage;
+              location.href=location.origin+"/neon.html#"+res.preferences.landingPage;
+              return;
             }
             this.shadowRoot.querySelector('.err.login').style.display="none";
             location.href=this.getAttribute('redirect-url') || '/index.html';

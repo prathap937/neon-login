@@ -1,0 +1,234 @@
+<script>
+customElements.define('neon-notification', class extends HTMLElement{
+  constructor(){
+    super();
+    const template = document.createElement('template');
+    template.innerHTML = ` 
+      <style>
+        :host{
+          display:none;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: #0009;
+          z-index:4;
+        }
+        :host([show]){
+          display:block;
+        }
+        .neon-notification-background main{
+          height:400px;
+        }
+        .neon-notification-background{
+          width: 80%;
+          margin: 0 auto;
+          top: 10%;
+          position: fixed;
+          background: #fff;
+          right: 0;
+          left: 0;
+        }
+        header{
+          padding: 20px;
+          letter-spacing: 1px;
+        }
+        footer{
+          padding:20px;
+        }
+        hr{
+          margin:0;
+        }
+        .action-btn{
+          text-align: right;
+        }
+        .action-btn .cancel{
+          background-color:#fff;
+          color:#6e6e6e;
+        }
+        .action-btn button {
+          background-color: #006599;
+          color: #FFFFFF;
+          padding: 10px 25px;
+          font-size: 14px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .close{
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          cursor:pointer;
+        }
+        .close svg{
+          width: 25px !important;
+          height: 25px !important;
+        }
+        /*contetn design*/
+        .main-head{
+          background: #f5f5f5;
+          padding: 10px 10px 10px 25px;;
+          overflow: hidden;
+        }
+        .head-title{
+          float:left;
+          font-size: 10pt;
+          color: #7F7F7F;
+        }
+        .head-title.left{
+          width:160px;
+        }
+        .main-content{
+          background: #f7f7f7;
+        }
+        .content-container{
+          background-color:#f5f5f5;
+          padding-bottom: 5px;
+        }
+        .content:hover{
+          background:#e5e5e5;
+        }
+        .content{
+          background: #fff;
+          padding: 0px 10px 0px 25px;
+          overflow:hidden;
+        }
+        .desc-title{
+          float:left;
+          font-size: 10pt;
+          padding: 10px 10px 10px 0;
+        }
+        .desc-title.left{
+          width:150px;
+        }
+        .desc-title.right{
+          letter-spacing:1px;
+          width: calc(100% - 290px);
+        }
+        .desc-title.last{
+          width:70px;
+        }
+        .desc-title button{
+          background: #006599;
+          border: none;
+          color: #fff;
+          padding: 7px 11px;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+      </style>
+
+      <div id="neon-notification">
+        <div class="neon-notification-background">
+          <section class="neon-notification">
+            <header><strong>Notifications</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></span>
+            </header>
+            <hr>
+            <main>
+              <div class="main-head">
+                <div class="head-title left">
+                  Date Time
+                </div>
+                <div class="head-title">
+                  Details
+                </div>
+              </div>
+              <div class="main-content">
+                <div class="content-container">
+                  <div class="content">
+                    <div class="desc-title left">
+                      21 Nov 2017 12:33 PM
+                    </div>
+                    <div class="desc-title right">
+                      Approval needed for  <strong>Campaign  ApprovalCampaign</strong>  under category  <strong>ApprovalCategory</strong>  by  <strong>System Administrator</strong>
+                    </div>
+                    <div class="desc-title last"><button>Review</button></div>
+                  </div>
+                </div>
+              </div>
+            </main>
+            <hr>
+            <footer> 
+              <div class="action-btn">
+                <button class="editpreferencesCancel jsclose">Ok</button>
+              </div>
+            </footer>
+          </section>
+        </div>
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    Array.from(this.shadowRoot.querySelectorAll('.jsclose')).forEach(node=>node.addEventListener('click', (e) => {
+      this.removeAttribute('show');
+    }));
+  }
+  
+  connectedCallback(){  
+    this.data=JSON.parse(sessionStorage.getItem('login_response'));
+    this.url=location.origin;  
+    this.callAPI("GET",this.url+`/neon-ws/getNotifications?webUserId=${this.data.id}&partnerId=${this.data.partner.id}`).then(res=>{
+      if(Array.isArray(JSON.parse(res)) && JSON.parse(res).length > 0){
+        this.setNotificationData(JSON.parse(res));
+      }else{
+        this.shadowRoot.querySelector('.content-container').innerHTML="No Notifications found!";
+      }
+    });
+  }
+
+  setNotificationData(notes){
+    let res="";
+    for(let note of notes){
+      res +=`<div class="content-container"><div class="content"><div class="desc-title left">${this.getNoteTime(note.createdTime)}</div>
+            <div class="desc-title right">
+              Approval needed for  <strong>${note.campaignName}</strong>  under category  <strong>${note.categoryName}</strong>  by  <strong>${note.createdBy}</strong>
+            </div><div class="desc-title last"><button>Review</button></div></div></div>`;
+    }
+    this.shadowRoot.querySelector('.main-content').innerHTML=res;
+
+  }
+  getNoteTime(date){
+    date=new Date(date);
+    var month = new Array();
+    month[0] = "Jan";
+    month[1] = "Feb";
+    month[2] = "Mar";
+    month[3] = "Apr";
+    month[4] = "May";
+    month[5] = "Jun";
+    month[6] = "Jul";
+    month[7] = "Aug";
+    month[8] = "Sept";
+    month[9] = "Oct";
+    month[10] = "Nov";
+    month[11] = "Dec";
+    if(date){
+      return date.getDate() +' '+
+      month[date.getMonth()]+ ' '+
+      date.getFullYear()+' '+
+      date.getHours()+':'+
+      date.getMinutes()
+      date.getHours() > 11? 'PM':'AM';
+    }
+
+  }
+  callAPI(method,url,data){
+    return new Promise((resolve,reject)=>{
+      let xhr=new XMLHttpRequest();
+      xhr.open(method,url);
+      xhr.setRequestHeader('content-type','application/json')
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else { reject({status: this.status,statusText: xhr.statusText}); }
+      };
+      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
+      xhr.send(data);
+    });
+  }
+
+});
+</script>

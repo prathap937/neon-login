@@ -13,29 +13,32 @@ customElements.define('edit-preferences', class extends HTMLElement{
           top: 0;
           left: 0;
           background: #0009;
+          z-index:4;
         }
         :host([show]){
           display:block;
         }
         .edit-preferences-background main{
           height:400px;
+          padding: 20px;
         }
         .edit-preferences-background{
-          width: 450px;
+          width: 600px;
           margin: 0 auto;
           top: 10%;
           position: fixed;
           background: #fff;
-          padding: 20px;
           right: 0;
           left: 0;
         }
         header{
-          margin-bottom: 20px;
+          padding: 20px;
         }
-        header hr,footer hr{
-          width: 488px;
-          margin-left: -20px;
+        footer{
+          padding:20px;
+        }
+        hr{
+          margin: 0px;
         }
         .form-groub {
           padding-bottom: 5px;
@@ -69,12 +72,11 @@ customElements.define('edit-preferences', class extends HTMLElement{
           font-size:0.8em
         }
         .err{
-          font-size:0.8em;
+          font-size:0.7em;
           color:red;
           position: absolute;
         }
         .action-btn{
-          padding-top: 10px;
           text-align: right;
         }
         .action-btn .editProfileCancel{
@@ -110,7 +112,7 @@ customElements.define('edit-preferences', class extends HTMLElement{
         }
         .page-container{
           display:none;
-          margin:15px 0;
+          margin:15px 0 0;
           height: 240px;
           overflow: auto;
           font-size: 11pt;
@@ -162,12 +164,23 @@ customElements.define('edit-preferences', class extends HTMLElement{
         .selected-page{
           font-size:11px;
         }
+        .close{
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          cursor:pointer;
+        }
+        .close svg{
+          width: 25px !important;
+          height: 25px !important;
+        }
       </style>
 
       <div class="edit-preferences">
         <div class="edit-preferences-background">
           <section class="edit-preferences">
-            <header><strong>Preferences</strong><hr></header>
+            <header><strong>Preferences</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></header>
+            <hr>
             <main>
               <div class="form-groub-checkbox">
                 <div>
@@ -184,19 +197,20 @@ customElements.define('edit-preferences', class extends HTMLElement{
               </div> 
               <div class="form-groub-checkbox">
                 <div>
-                <label for="rememberMe" class="rememberMe">Preferred Home Page</label>
-                <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> Default</label>
+                  <label for="rememberMe" class="rememberMe">Preferred Home Page</label>
+                  <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> Default</label>
                   <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> Specific Page</label>
                   <span class="selected-page">(Please select the page)</span>
                 </div>
                 <div class="page-container">
-                </pages>
+                </div>
+                <span class="err page-contain-err" style="display:none">please select the page</span>
               </div>
             </main>
+            <hr>
             <footer> 
-              <hr>
               <div class="action-btn">
-                <button class="editpreferencesCancel cancel">Cancel</button>
+                <button class="editpreferencesCancel cancel jsclose">Cancel</button>
                 <button class="editpreferencesSave">Save</button>
               </div>
             </footer>
@@ -214,9 +228,9 @@ customElements.define('edit-preferences', class extends HTMLElement{
       });
     });
 
-    this.shadowRoot.querySelector('.editpreferencesCancel').addEventListener('click', (e) => {
+    Array.from(this.shadowRoot.querySelectorAll('.jsclose')).forEach(node=>node.addEventListener('click', (e) => {
       this.removeAttribute('show');
-    });
+    }));
 
     this.shadowRoot.querySelector('.editpreferencesSave').addEventListener('click', (e) => {
       this.savePreferences();
@@ -277,25 +291,33 @@ customElements.define('edit-preferences', class extends HTMLElement{
         }
       });
     });
-
-    
   }
 
   showPages(page,i){
     for(let p of page.children){
       if(p.children){
-        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${p.name}<input type="radio" name="page" value="${p.path}"/></label>`;
+        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${this.getVarName(p.name)}<input type="radio" name="page" value="${p.path}"/></label>`;
         i++;
         this.showPages(p,i);
       }else{
-        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${p.name}<input type="radio" name="page" value="${p.path}"/></label>`;
+        this.pageData+=`<label class="page deep-${i}" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${this.getVarName(p.name)}<input type="radio" name="page" value="${p.path}"/></label>`;
       }
     }
+  }
+  getVarName(variable){
+    if(sessionStorage.getItem('il10') != null){
+      this.il10=JSON.parse(sessionStorage.getItem('il10'));
+      if(this.il10[variable]){
+        return this.il10[variable]; 
+      }else{
+        return variable;
+      }
+    }
+    return variable;
   }
   fillPages(){
     this.callAPI('GET', this.url+'/json/site-map.json').then(res=>{
       res=JSON.parse(res);
-      console.log(res);
       this.pageData="";
       this.pageData+=`<label class="page deep-0" ><span><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 20px; height: 20px;"><g class="style-scope iron-icon"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" class="style-scope iron-icon"></path></g></svg></span>${res.name}<input type="radio" name="page" value="${res.path}"/></label>`;
       this.showPages(res,1);
@@ -304,13 +326,14 @@ customElements.define('edit-preferences', class extends HTMLElement{
 
     setTimeout(()=>{
       this.data=JSON.parse(sessionStorage.login_response);
-      if(this.data.preferences.landingPage != ""){
+      if(this.data.preferences.landingPage != "" && this.data.preferences.landingPage != null ){
         this.shadowRoot.querySelector('.selected-page').innerHTML=`(${this.data.preferences.landingPage})`;
-        this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').checked=true;
-        this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').parentElement.style.background="#E0E0E0";
+        if(this.data.preferences.landingPage){
+          this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').checked=true;
+          this.shadowRoot.querySelector('.page-container input[value="'+this.data.preferences.landingPage+'"]').parentElement.style.background="#E0E0E0";
+        }
       }
     },100);
-    console.log(this.data);
   }
   savePreferences(){
     let valid=this.checkValidation();
@@ -318,8 +341,13 @@ customElements.define('edit-preferences', class extends HTMLElement{
       let showClock=(this.shadowRoot.querySelector('#showClock').checked) ? "true" : "false";
       let preferredHomePage=(this.shadowRoot.querySelector('#homePage').checked) ? "" : "/";
       if(this.shadowRoot.querySelector('#homePage1').checked){
-        if(Array.from(this.shadowRoot.querySelectorAll('.page input')).find(i=>i.checked==true).value){
-          preferredHomePage=Array.from(this.shadowRoot.querySelectorAll('.page input')).find(i=>i.checked==true).value;
+        let selPage=Array.from(this.shadowRoot.querySelectorAll('.page input')).find(i=>i.checked==true)
+        if(selPage){
+          preferredHomePage=selPage.value ? selPage.value : "" ;
+          this.shadowRoot.querySelector('.page-contain-err').style.display="none";
+        }else{
+          this.shadowRoot.querySelector('.page-contain-err').style.display="block";
+          return;
         }
       }
 
@@ -369,19 +397,17 @@ customElements.define('edit-preferences', class extends HTMLElement{
       this.shadowRoot.querySelector('#homePage').checked=false;
       this.shadowRoot.querySelector('#homePage1').checked=true;
       this.shadowRoot.querySelector('.page-container').style.display="block";
-      
     }
 
     if(this.data.preferences.landingPartnerId == ""){
       this.shadowRoot.querySelector('#preferedpartner').value="";
     }else{
-      this.shadowRoot.querySelector('#preferedpartner').value=this.data.sudoPartners.filter(i=> i.id ==this.data.preferences.landingPartnerId)[0].name;
+      if(this.data.preferences.landingPartnerId){
+        this.shadowRoot.querySelector('#preferedpartner').value=this.data.sudoPartners.filter(i=> i.id ==this.data.preferences.landingPartnerId)[0].name;
+      }
     }
 
-    
-
     this.setPartnersList();
-
   }
   getPartnerID(){
     let pp=this.shadowRoot.querySelector('#preferedpartner').value;

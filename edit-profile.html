@@ -15,24 +15,24 @@ customElements.define('edit-profile', class extends HTMLElement{
           top: 0;
           left: 0;
           background: #0009;
+          z-index:4;
         }
         :host([show]){
           display:block;
         }
         .edit-profile-background{
-          width: 450px;
+          width: 550px;
           margin: 0 auto;
           top: 15%;
           position: relative;
           background: #fff;
+        }
+        header,footer,main{
           padding: 20px;
+          letter-spacing:1px;
         }
-        header{
-          margin-bottom: 20px;
-        }
-        header hr,footer hr{
-          width: 488px;
-          margin-left: -20px;
+        hr{
+          margin:0;
         }
         .form-groub {
           padding-bottom: 5px;
@@ -71,7 +71,6 @@ customElements.define('edit-profile', class extends HTMLElement{
           position: absolute;
         }
         .action-btn{
-          padding-top: 10px;
           text-align: right;
         }
         .action-btn .editProfileCancel{
@@ -104,14 +103,23 @@ customElements.define('edit-profile', class extends HTMLElement{
           padding-left:5px;
           box-sizing:border-box;
         }
-        
-
-
+        .close{
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          cursor:pointer;
+        }
+        .close svg{
+          width: 25px !important;
+          height: 25px !important;
+        }      
+  
       </style>
       
       <div class="edit-profile-background">
         <section class="edit-profile">
-          <header><strong>Profile</strong><hr></header>
+          <header><strong>Profile</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></header>
+          <hr>
           <main>
             <div class="form-groub w50l">
               <input type="text" id="firstName" class="has-value" >
@@ -153,10 +161,10 @@ customElements.define('edit-profile', class extends HTMLElement{
             </div> 
 
           </main>
+          <hr>
           <footer> 
-            <hr>
             <div class="action-btn">
-              <button class="editProfileCancel">Cancel</button>
+              <button class="editProfileCancel jsclose">Cancel</button>
               <button class="editProfileSave">Save</button>
             </div>
           </footer>
@@ -171,6 +179,10 @@ customElements.define('edit-profile', class extends HTMLElement{
       input.addEventListener('change',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
       });
     });
+
+    Array.from(this.shadowRoot.querySelectorAll('.jsclose')).forEach(node=>node.addEventListener('click', (e) => {
+      this.removeAttribute('show');
+    }));
   }
   
   connectedCallback(){ 
@@ -179,10 +191,6 @@ customElements.define('edit-profile', class extends HTMLElement{
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=location.origin;
     this.fillProfileData();
-
-    this.shadowRoot.querySelector('.editProfileCancel').addEventListener('click', (e) => {
-      this.removeAttribute('show');
-    });
 
     this.shadowRoot.querySelector('.editProfileSave').addEventListener('click', (e) => {
       this.saveProfileValues();
@@ -224,7 +232,7 @@ customElements.define('edit-profile', class extends HTMLElement{
     let webLanguageId=this.getSelectedWebLanguageId();
     let userId=this.data.id
     let err=0;
-    if(email.length > 4 && !this.validateEmail(email)){
+    if(email.length < 5 && !this.validateEmail(email)){
       this.shadowRoot.querySelector('.err.email').innerText="Please provide valid Email!";
       this.shadowRoot.querySelector('.err.email').style.display="block";
       err++;
@@ -323,24 +331,33 @@ customElements.define('edit-profile', class extends HTMLElement{
 
   getSelectedTimezoneId(){
     let timezone=this.shadowRoot.querySelector('#timezone').value;
-    let res=this.timezonesList.find(item=>item.description == timezone).sortOrder;
-    if(parseInt(res) > 0) return res;
+    let res=this.timezonesList.find(item=>item.description == timezone);
+    if(res){
+      res=this.timezonesList.find(item=>item.description == timezone).sortOrder;
+      if(parseInt(res) > 0) return res;
+    }
     return false;
   }
   getSelectedWebLanguageId(){
     let webLanguage=this.shadowRoot.querySelector('#webLanguageId').value;
-    let res=this.languagesList.find(item=>item.name == webLanguage).countryId;
-    if(parseInt(res) > 0) return res;
+    let res=this.languagesList.find(item=>item.name == webLanguage);
+    if(res){
+      res=this.languagesList.find(item=>item.name == webLanguage).countryId;
+      if(parseInt(res) > 0) return res;
+    }
     return false;
   }
   getSelectedWebLocaleId(){
     let locale=this.shadowRoot.querySelector('#localeId').value;
     let res=this.localesList.find(item=>item.localeName == locale);
-    //unable to find locale id from the api. So return 1 for all
-    if(res) return 1;
+    let localeId="";
+    if(res){
+      res=this.localesList.find(item=>item.localeName == locale)._links.locale.href;
+      localeId=res.substring(res.lastIndexOf("/")+1)
+    }
+    if(localeId) return localeId;
     return false;
   }
-
 
   setTimezoneList(timezones){
     this.timezonesList=timezones;

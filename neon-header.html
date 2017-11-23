@@ -1,6 +1,7 @@
 
 <link rel="import" href="./edit-preferences.html">
 <link rel="import" href="./edit-profile.html">
+<link rel="import" href="./neon-notification.html">
 
 <script>
 customElements.define('neon-header', class extends HTMLElement{
@@ -76,12 +77,24 @@ customElements.define('neon-header', class extends HTMLElement{
           border-left: 2px dashed #fff;
         }
         .notification {
+          position:relative;
           width: 35px;
           text-align: center;
           align-self: center;
           height: 31px;
           border-left: 2px dashed #fff;
           padding-left: 10px;
+        }
+        .notification-count{
+          width: 15px;
+          height: 15px;
+          background: #fa3e3e;
+          display: inline-block;
+          font-size: 11px;
+          border-radius: 24px;
+          position: absolute;
+          top: 0;
+          color:#fff;
         }
         .user-options {
           min-width: 220px;
@@ -257,6 +270,66 @@ customElements.define('neon-header', class extends HTMLElement{
           padding-right: 5px;
           width: 20px;
         }
+        .notification svg{
+          cursor:pointer;
+        }
+        .notification-modal{
+          width: 300px;
+          background: #fff;
+          position: absolute;
+          right: -8px;
+          top: 30px;
+          z-index:4;
+          display:none;
+        }
+        .notification:hover .notification-modal{
+          display:block;
+        }
+        .notifications{
+          overflow: hidden;
+          padding-bottom: 10px;
+          border-bottom: 1px solid #ccc;
+          margin-top: 10px;
+        }
+        .notification-desc{
+          text-align: left;
+          font-size: 13px;
+          line-height: 20px;
+          padding: 0 15px;
+        }
+        .notifcation-time{
+          color: black;
+          font-size: 11px;
+          float: left;
+          margin-top: 10px;
+          padding-left: 15px;
+        }
+        .notifcation-detail button{
+          padding: 0.4em 0.77em;
+          font-family: 'Open Sans', sans-serif;
+          background-color: #006599;
+          border: none;
+          color: #fff;
+          font-weight: bold;
+          float: right;
+          border-radius: 3px;
+          cursor: pointer;
+          margin-right: 15px;
+        }
+        .notification-footer{
+          margin-top: 7px;
+        }
+        .notification-all p{
+          text-align: right;
+          color: #006599;
+          padding: 7px;
+          margin: 0;
+          font-size: 13px;
+          cursor: pointer;
+        }
+        .bold{
+          font-weight:bold;
+        }
         @media screen and (max-width: 1000px) {
           select.profile{
             width:auto;
@@ -278,7 +351,7 @@ customElements.define('neon-header', class extends HTMLElement{
           }       
         }
       </style>
-
+      <edit-profile show></edit-profile>
       <div id="neon-header">
         <header class="menu-header flex-container">
             <div class="logo">
@@ -302,6 +375,15 @@ customElements.define('neon-header', class extends HTMLElement{
 
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><style type="text/css">.st0{fill:#657D89;}.st1{fill:#EF3A39;}.st2{fill:#1F2328;}.st3{fill:#C9C9C9;}.st4{fill:#010101;}.st5{fill:#59BA47;}.st6{fill:#F16464;}.st7{fill:#086699;}.st8{enable-background:new;}.st9{fill:#C9C9C9;enable-background:new;}.st10{fill:#62C195;}.st11{opacity:0;fill:#FFFFFF;}.st12{display:none;}.st13{display:inline;opacity:0.32;fill:#F05023;}</style><path class="st1" d="M4.89,17.67v-0.71h1.07v-6.67C5.95,6.82,8.67,4,12,4s6.05,2.82,6.05,6.29v6.67h1.07v0.71H4.89z M17.33,10.29c0-3.08-2.39-5.58-5.33-5.58s-5.33,2.5-5.33,5.58v6.67h10.67V10.29z M12,20c-0.79,0-1.42-0.66-1.42-1.48h2.84C13.42,19.34,12.79,20,12,20z"/><g>  <rect class="st11" width="24" height="24"/></g><g class="st12"><rect x="4" y="4" class="st13" width="16" height="16"/></g></svg>
 
+                <span class="notification-count">0</span>
+                <div class="notification-modal">
+                  <div class="notification-container">
+                    No notifications.
+                  </div>
+                  <div class="notification-all" style="display:none">
+                      <p>View All <span class="note-count">0</span> Notifications</p>
+                  </div>
+                </div>  
             </div>
             
             <div class="user-options flex-box">
@@ -382,6 +464,8 @@ customElements.define('neon-header', class extends HTMLElement{
             </div>
           </div>
         </div>
+        <div class="show-notification">
+        </div>
 
       </div>
     `;
@@ -399,17 +483,15 @@ customElements.define('neon-header', class extends HTMLElement{
     // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
     if( location.pathname.indexOf('launch.html') ) this.shadowRoot.querySelector('.logo a').href="#";
 
-    this.callApi("http://192.168.150.27/neon-ws/auth/status").then(res=>{
-      console.log(res);
-    }).catch(err=>{console.log(err);});
-
-
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=location.origin;
 
     this.setTime();
     this.setUserName();
     this.setPartners();
+    setInterval(()=>{this.getNotifications();}, 60000);
+    this.getNotifications();
+    this.getIl10();
 
     this.shadowRoot.querySelector('.profile').addEventListener('change',(e)=>{
       this.shadowRoot.querySelector('.change-partner-background').style.display="block";
@@ -446,10 +528,9 @@ customElements.define('neon-header', class extends HTMLElement{
       ep.setAttribute('show', "");
       document.body.appendChild(ep);
     });
-
-
-    
+   
     this.shadowRoot.querySelector('.logout').addEventListener('click',(e)=>{ 
+
       this.logout(this.url+'/neon-ws/logout').then(res=>{
         if(sessionStorage.login_response) delete sessionStorage.login_response
         if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
@@ -464,6 +545,14 @@ customElements.define('neon-header', class extends HTMLElement{
         location.href="/index.html";
       });
     });
+
+    this.shadowRoot.querySelector('.notification-all p').addEventListener('click',(e)=>{ 
+      let note=document.createElement('neon-notification');
+      note.setAttribute('show', '');
+      document.body.appendChild(note);
+    });
+
+
   }
   changePasswordCall(url){
     let valid=this.checkValidation();
@@ -559,6 +648,104 @@ customElements.define('neon-header', class extends HTMLElement{
     });
   }
 
+  getNotifications(){
+    this.callApi(this.url+`/neon-ws/getNotifications?webUserId=${this.data.id}&partnerId=${this.data.partner.id}`).then(res=>{
+      res=JSON.parse(res);
+      if(res.length > 0){
+        this.shadowRoot.querySelector('.notification-count').innerHTML=res.length;
+        this.shadowRoot.querySelector('.notification-all').style.display="block";
+        this.shadowRoot.querySelector('.note-count').innerHTML=res.length;
+      }else{
+        this.shadowRoot.querySelector('.notification-count').style.display="none";
+      }
+
+      let notes="",i=1;
+      for(let note of res){
+        if(i < 4){
+          notes+=`<div class="notifications"><div class="notification-desc">
+              Approval needed for  <span class="bold">${note.campaignName}</span>  under <span class="bold">${note.categoryName}</span>  by  <span class="bold">${note.createdBy}</span>
+            </div><div class="notification-footer"><span class="notifcation-time">
+              ${this.dateUtils(note.createdTime)} at ${this.getNoteTime(note.createdTime)}</span><span class="notifcation-detail"> <button>Review</button></span></div></div>`;
+        }
+        i++;
+      }
+
+      this.shadowRoot.querySelector('.notification-container').innerHTML=notes;
+
+    });
+    // .catch(err=>{console.log('error in fetch notification');});
+  }
+  getNoteTime(date){
+    date=new Date(date);
+    return `${date.getHours()} : ${date.getMinutes()} ${date.getHours() > 11 ? 'PM':'AM'}`;
+
+  }
+  dateUtils1(date){
+    var seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+    var interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+      return interval + " years ago";
+    }
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+      return interval + " months ago";
+    }
+
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+      return interval + " days ago";
+    }
+
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+      if(Math.floor(interval/24) ==  1 ){
+        return "Yesterday ";
+      }else if(Math.floor(interval/24) >  1 ){
+        return Math.floor(interval/24) + " days ago";
+      }
+      return interval + " hours ago";
+    }
+
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+      return interval + " minutes go";
+    }
+    return Math.floor(seconds) + " seconds";
+  
+  }
+  dateUtils(previous){
+    previous=new Date(previous);
+    let current=new Date();
+
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    }
+    else if (elapsed < msPerHour) {
+         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    }
+    else if (elapsed < msPerDay ) {
+         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    }
+    else if (elapsed < msPerMonth) {
+        return Math.round(elapsed/msPerDay) + ' days ago';   
+    }
+    else if (elapsed < msPerYear) {
+        return Math.round(elapsed/msPerMonth) + ' months ago';   
+    }
+    else {
+        return Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
+  }
   changePartner(url,id){
     this.changePartnerCall(url+"/neon-ws/changePartner?partnerId="+id).then(res=>{
         let changeVal=JSON.parse(res);
@@ -603,7 +790,23 @@ customElements.define('neon-header', class extends HTMLElement{
 
     });
   }
-
+  getIl10(){
+    this.callApi(this.url+"/l10n/data.en.properties").then(res=>{
+      sessionStorage.lang=res;
+      let lines=res.split("\n");
+      let hashCount=0;
+      let il10={};
+      for(let line of lines){
+        line=line.trim();
+        if(!line.trim().startsWith('#')){
+          il10[line.substring(0,line.indexOf('='))]=line.substring(line.indexOf('=')+1,line.length);
+        }else{
+          hashCount++;
+        }
+      }
+      sessionStorage.setItem('il10',JSON.stringify(il10));
+    });
+  }
   callApi(url){
     return new Promise((resolve,reject)=>{
       let xhr=new XMLHttpRequest();
