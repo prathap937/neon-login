@@ -175,7 +175,7 @@ customElements.define('neon-notification', class extends HTMLElement{
       if(Array.isArray(JSON.parse(res)) && JSON.parse(res).length > 0){
         this.setNotificationData(JSON.parse(res));
       }else{
-        this.shadowRoot.querySelector('.content-container').innerHTML="No Notifications found!";
+        this.shadowRoot.querySelector('.content-container').innerHTML="No new notifications!";
       }
     });
   }
