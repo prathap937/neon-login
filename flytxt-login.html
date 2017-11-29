@@ -229,12 +229,12 @@ customElements.define('flytxt-login', class extends HTMLElement{
             </div>
           </div>
           <div class="form-groub">
-            <input type="text" id="username" value="kaviya.nair@flytxt.com" >
+            <input type="text" id="username" value="" >
             <label for="username">Username</label>
             <span class="err username" style="display:none">Invalid Username</span>
           </div>  
           <div class="form-groub pb0">
-            <input type="password" id="password" value="flytxt">
+            <input type="password" id="password" value="">
             <label for="password">Password</label>
             <span class="err password" style="display:none">Invalid Username</span>
           </div>
@@ -275,7 +275,11 @@ customElements.define('flytxt-login', class extends HTMLElement{
 
     /*for input focus effect*/
     this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
-      input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
+      input.addEventListener('input',e=>{ 
+        
+        (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
+        if(e.target.id == "username") this.usernameClicked++;
+        if(e.target.id == "password") this.passwordClicked++;
         this.checkValidation();
       });
     });
@@ -291,13 +295,13 @@ customElements.define('flytxt-login', class extends HTMLElement{
     if(password.value.length > 0) password.classList.add('has-value'); else password.classList.remove('has-value');
 
     let err=0;
-    if(username.value.length < 4){
+    if(username.value.length < 4 && this.usernameClicked > 0){
       this.shadowRoot.querySelector('.err.username').style.display="block";
       err++;
     }else{
       this.shadowRoot.querySelector('.err.username').style.display="none";
     }
-    if(password.value.length < 4){
+    if(password.value.length < 4 && this.passwordClicked > 0){
       this.shadowRoot.querySelector('.err.password').style.display="block";
       err++;
     }else{
@@ -316,8 +320,9 @@ customElements.define('flytxt-login', class extends HTMLElement{
 
   }
   connectedCallback(){
-    
-    this.checkValidation();
+    this.usernameClicked=0;
+    this.passwordClicked=0;
+    // this.checkValidation();
     this.shadowRoot.querySelector('#login-submit').addEventListener('click', (e) => {
       let val=this.checkValidation();
       if( val !== false){
