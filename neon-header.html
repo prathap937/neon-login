@@ -1,15 +1,15 @@
-
 <link rel="import" href="./edit-preferences.html">
 <link rel="import" href="./edit-profile.html">
 <link rel="import" href="./neon-notification.html">
 
 <script>
-customElements.define('neon-header', class extends HTMLElement{
-  constructor(){
-    super();
-  
-    const template = document.createElement('template');
-    template.innerHTML = ` 
+  customElements.define('neon-header', class extends HTMLElement {
+    constructor() {
+      super();
+
+      const template = document.createElement('template');
+      template.innerHTML =
+        ` 
       <style>
         header.menu-header {
           background: rgba(0,0,0,.65);
@@ -479,365 +479,434 @@ customElements.define('neon-header', class extends HTMLElement{
 
       </div>
     `;
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-     this.shadowRoot.querySelectorAll('.form-groub input').forEach(input=>{
-      input.addEventListener('input',e=>{ (e.target.value.length > 0) ? e.target.classList.add('has-value') :e.target.classList.remove('has-value');
-        this.checkValidation();
+      this.attachShadow({
+        mode: 'open'
       });
-    });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.shadowRoot.querySelector('.jsclose').addEventListener('click', (e) => {
-      this.shadowRoot.querySelector('.change-password-background').style.display="none";
-    });
-
-    this.shadowRoot.querySelector('.changePasswordNo').addEventListener('click',(e)=>{ 
-      this.shadowRoot.querySelector('.change-password-background').style.display="none";
-    });
-
-    
-  }
-
-  connectedCallback(){
-    // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
-    if( location.pathname.indexOf('launch.html') ) this.shadowRoot.querySelector('.logo a').href="#";
-
-    this.data=JSON.parse(sessionStorage.getItem('login_response'));
-    this.url=location.origin;
-
-    this.setTime();
-    this.setUserName();
-    this.setPartners();
-    setInterval(()=>{this.getNotifications();}, 60000);
-    this.getNotifications();
-    this.getIl10();
-
-    this.shadowRoot.querySelector('.profile').addEventListener('change',(e)=>{
-      this.shadowRoot.querySelector('.change-partner-background').style.display="block";
-    });
-
-    this.shadowRoot.querySelector('.changePartnerYes').addEventListener('click',()=>{
-      this.changePartner(this.url,this.shadowRoot.querySelector('.profile').value);
-    });
-
-    this.shadowRoot.querySelector('.changePartnerNo').addEventListener('click',()=>{ 
-      this.shadowRoot.querySelector('.change-partner-background').style.display="none";
-    });
-
-    this.shadowRoot.querySelector('.changePasswordModal').addEventListener('click',()=>{ 
-      this.shadowRoot.querySelector('.change-password-background').style.display="block";
-    });
-
-    this.shadowRoot.querySelector('.changePasswordYes').addEventListener('click',(e)=>{ 
-      this.changePasswordCall(this.url+"/neon-ws/changePassword");
-    });
-
-    this.shadowRoot.querySelector('.editProfile').addEventListener('click',(e)=>{ 
-      let ep=document.createElement('edit-profile');
-      ep.setAttribute('show', "");
-      document.body.appendChild(ep);
-    });
-
-    this.shadowRoot.querySelector('.editPreferences').addEventListener('click',(e)=>{ 
-      let ep=document.createElement('edit-preferences');
-      ep.setAttribute('show', "");
-      document.body.appendChild(ep);
-    });
-   
-    this.shadowRoot.querySelector('.logout').addEventListener('click',(e)=>{ 
-
-      this.logout(this.url+'/neon-ws/logout').then(res=>{
-        if(sessionStorage.login_response) delete sessionStorage.login_response
-        if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
-          location.href=this.getAttribute('login-url');
-        }
-        location.href="/index.html";
-      }).catch(err=>{
-        if(sessionStorage.login_response) delete sessionStorage.login_response
-        if(this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3){
-          location.href=this.getAttribute('login-url');
-        }
-        location.href="/index.html";
+      this.shadowRoot.querySelectorAll('.form-groub input').forEach(input => {
+        input.addEventListener('input', e => {
+          (e.target.value.length > 0) ? e.target.classList.add('has-value'): e.target.classList.remove(
+            'has-value');
+          this.checkValidation();
+        });
       });
-    });
 
-    this.shadowRoot.querySelector('.notification-all p').addEventListener('click',(e)=>{ 
-      let note=document.createElement('neon-notification');
-      note.setAttribute('show', '');
-      document.body.appendChild(note);
-    });
+      this.shadowRoot.querySelector('.jsclose').addEventListener('click', (e) => {
+        this.shadowRoot.querySelector('.change-password-background').style.display = "none";
+      });
+
+      this.shadowRoot.querySelector('.changePasswordNo').addEventListener('click', (e) => {
+        this.shadowRoot.querySelector('.change-password-background').style.display = "none";
+      });
 
 
-  }
-  changePasswordCall(url){
-    let valid=this.checkValidation();
-    if(valid){
-      this.changePassword(url,valid).then(res=>{
-        this.shadowRoot.querySelector('.change-password-background').style.display="none";
-        console.log('password changed');
-      }).catch(err=>{
-        this.shadowRoot.querySelector('.change-password-background').style.display="none";
-        console.log(err);
-        console.log('error in password change');
+    }
+
+    connectedCallback() {
+      // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+      if (location.pathname.indexOf('launch.html')) this.shadowRoot.querySelector('.logo a').href = "#";
+
+      this.data = JSON.parse(sessionStorage.getItem('login_response'));
+      this.url = location.origin;
+
+      this.setTime();
+      this.setUserName();
+      this.setPartners();
+      setInterval(() => {
+        this.getNotifications();
+      }, 60000);
+      this.getNotifications();
+      this.getIl10();
+
+      this.shadowRoot.querySelector('.notification-container').addEventListener('click', (e) => {
+        if(e.target.classList.contains('review-btn')){
+          this.goToApproval(e.target.getAttribute('notes'));
+        }
+      });
+
+      this.shadowRoot.querySelector('.profile').addEventListener('change', (e) => {
+        this.shadowRoot.querySelector('.change-partner-background').style.display = "block";
+      });
+
+      this.shadowRoot.querySelector('.changePartnerYes').addEventListener('click', () => {
+        this.changePartner(this.url, this.shadowRoot.querySelector('.profile').value);
+      });
+
+      this.shadowRoot.querySelector('.changePartnerNo').addEventListener('click', () => {
+        this.shadowRoot.querySelector('.change-partner-background').style.display = "none";
+      });
+
+      this.shadowRoot.querySelector('.changePasswordModal').addEventListener('click', () => {
+        this.shadowRoot.querySelector('.change-password-background').style.display = "block";
+      });
+
+      this.shadowRoot.querySelector('.changePasswordYes').addEventListener('click', (e) => {
+        this.changePasswordCall(this.url + "/neon-ws/changePassword");
+      });
+
+      this.shadowRoot.querySelector('.editProfile').addEventListener('click', (e) => {
+        let ep = document.createElement('edit-profile');
+        ep.setAttribute('show', "");
+        document.body.appendChild(ep);
+      });
+
+      this.shadowRoot.querySelector('.editPreferences').addEventListener('click', (e) => {
+        let ep = document.createElement('edit-preferences');
+        ep.setAttribute('show', "");
+        document.body.appendChild(ep);
+      });
+
+      this.shadowRoot.querySelector('.logout').addEventListener('click', (e) => {
+
+        this.logout(this.url + '/neon-ws/logout').then(res => {
+          if (sessionStorage.login_response) delete sessionStorage.login_response
+          if (this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3) {
+            location.href = this.getAttribute('login-url');
+          }
+          location.href = "/index.html";
+        }).catch(err => {
+          if (sessionStorage.login_response) delete sessionStorage.login_response
+          if (this.hasAttribute('login-url') && this.getAttribute('login-url').length > 3) {
+            location.href = this.getAttribute('login-url');
+          }
+          location.href = "/index.html";
+        });
+      });
+
+      this.shadowRoot.querySelector('.notification-all p').addEventListener('click', (e) => {
+        let note = document.createElement('neon-notification');
+        note.setAttribute('show', '');
+        document.body.appendChild(note);
+      });
+
+
+    }
+    changePasswordCall(url) {
+      let valid = this.checkValidation();
+      if (valid) {
+        this.changePassword(url, valid).then(res => {
+          this.shadowRoot.querySelector('.change-password-background').style.display = "none";
+          console.log('password changed');
+        }).catch(err => {
+          this.shadowRoot.querySelector('.change-password-background').style.display = "none";
+          console.log(err);
+          console.log('error in password change');
+        });
+      }
+    }
+    changePassword(url, valid) {
+      return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send(`userId=${this.data.id}&currentPassword=${valid.password}&newPassword=${valid.newpassword}`);
       });
     }
-  }
-  changePassword(url,valid){
-    return new Promise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', url);
-      xhr.setRequestHeader("content-type","application/x-www-form-urlencoded");
-      xhr.onload = function () {
-        if (this.status >= 200 && this.status < 300) {
-          resolve(xhr.response);
-        } else { reject({status: this.status,statusText: xhr.statusText}); }
+
+    checkValidation() {
+      let password = this.shadowRoot.querySelector('#password');
+      let newpassword = this.shadowRoot.querySelector('#newpassword');
+      let confirmpassword = this.shadowRoot.querySelector('#confirmpassword');
+      let err = 0;
+
+      if (password.value.length < 4) {
+        this.shadowRoot.querySelector('.err.password').style.display = "block";
+        err++;
+      } else {
+        this.shadowRoot.querySelector('.err.password').style.display = "none";
+      }
+
+      if (newpassword.value.length < 4) {
+        this.shadowRoot.querySelector('.err.newpassword').style.display = "block";
+        err++;
+      } else {
+        this.shadowRoot.querySelector('.err.newpassword').style.display = "none";
+      }
+
+      if (confirmpassword.value.length < 4) {
+        this.shadowRoot.querySelector('.err.confirmpassword').style.display = "block";
+        err++;
+      } else {
+        this.shadowRoot.querySelector('.err.confirmpassword').style.display = "none";
+      }
+
+      if (err == 0) return {
+        password: password.value,
+        newpassword: newpassword.value
       };
-      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
-      xhr.send(`userId=${this.data.id}&currentPassword=${valid.password}&newPassword=${valid.newpassword}`);
-    });
-  }
-
-  checkValidation(){
-      let password=this.shadowRoot.querySelector('#password');
-      let newpassword=this.shadowRoot.querySelector('#newpassword');
-      let confirmpassword=this.shadowRoot.querySelector('#confirmpassword');
-      let err=0;
-
-      if(password.value.length < 4 ){
-        this.shadowRoot.querySelector('.err.password').style.display="block";
-        err++;
-      }else{
-        this.shadowRoot.querySelector('.err.password').style.display="none";
-      }
-
-      if(newpassword.value.length < 4 ){
-        this.shadowRoot.querySelector('.err.newpassword').style.display="block";
-        err++;
-      }else{
-        this.shadowRoot.querySelector('.err.newpassword').style.display="none";
-      }
-      
-      if(confirmpassword.value.length < 4 ){
-        this.shadowRoot.querySelector('.err.confirmpassword').style.display="block";
-        err++;
-      }else{
-        this.shadowRoot.querySelector('.err.confirmpassword').style.display="none";
-      }
-
-      if(err == 0) return {password:password.value,newpassword:newpassword.value};
 
       return false;
-  }
-  setUserName(){
-    if(this.data){
-      this.shadowRoot.querySelector('.usrname').innerText= this.data.firstName+' '+this.data.lastName;
-    }else{
-      this.shadowRoot.querySelector('.usrname').innerText= 'Admin';
-      console.log('unable to get username');
     }
-  }
-
-  setTime(){
-    if(this.data.preferences.isClockActive){
-      let date=new Date();
-      let time=((date.getHours() < 12) ? date.getHours() : date.getHours() - 12)+":"+date.getMinutes()+" "+((date.getHours() < 12) ? "AM" : "PM");
-      this.shadowRoot.querySelector('.time span').innerText=time;
-      this.shadowRoot.querySelector('.time').style.display="block";
-    }else{
-      this.shadowRoot.querySelector('.time').style.display="none";
+    setUserName() {
+      if (this.data) {
+        this.shadowRoot.querySelector('.usrname').innerText = this.data.firstName + ' ' + this.data.lastName;
+      } else {
+        this.shadowRoot.querySelector('.usrname').innerText = 'Admin';
+        console.log('unable to get username');
+      }
     }
-  }
 
-  setPartners(){
-    this.changePartnerCall( this.url +"/neon-ws/auth/status").then(res=>{
-      sessionStorage.setItem('login_response',res);
-      this.data=JSON.parse(sessionStorage.login_response);
-
-      let options="";
-      for(let p of this.data.sudoPartners){
-        let selected="";
-        if(p.id === this.data.partnerId) selected="selected";
-        options+=`<option ${selected} value="${p.id}">${p.name}</option>`
+    setTime() {
+      if (this.data.preferences.isClockActive) {
+        let date = new Date();
+        let time = ((date.getHours() < 12) ? date.getHours() : date.getHours() - 12) + ":" + date.getMinutes() +
+          " " + ((date.getHours() < 12) ? "AM" : "PM");
+        this.shadowRoot.querySelector('.time span').innerText = time;
+        this.shadowRoot.querySelector('.time').style.display = "block";
+      } else {
+        this.shadowRoot.querySelector('.time').style.display = "none";
       }
-      this.shadowRoot.querySelector('.profile').innerHTML=options;
-    });
-  }
+    }
 
-  getNotifications(){
-    this.callApi(this.url+`/neon-ws/getNotifications?webUserId=${this.data.id}&partnerId=${this.data.partner.id}`).then(res=>{
-      res=JSON.parse(res);
-      if(res.length > 0){
-        this.shadowRoot.querySelector('.notification-count').innerHTML=res.length;
-        this.shadowRoot.querySelector('.notification-all').style.display="block";
-        this.shadowRoot.querySelector('.note-count').innerHTML=res.length;
-      }else{
-        this.shadowRoot.querySelector('.notification-count').style.display="none";
-      }
+    setPartners() {
+      this.changePartnerCall(this.url + "/neon-ws/auth/status").then(res => {
+        sessionStorage.setItem('login_response', res);
+        this.data = JSON.parse(sessionStorage.login_response);
 
-      let notes="",i=1;
-      for(let note of res){
-        if(i < 4){
-          notes+=`<div class="notifications"><div class="notification-desc">
+        let options = "";
+        for (let p of this.data.sudoPartners) {
+          let selected = "";
+          if (p.id === this.data.partnerId) selected = "selected";
+          options += `<option ${selected} value="${p.id}">${p.name}</option>`
+        }
+        this.shadowRoot.querySelector('.profile').innerHTML = options;
+      });
+    }
+
+    getNotifications() {
+      this.callApi(this.url +
+        `/neon-ws/getNotifications?webUserId=${this.data.id}&partnerId=${this.data.partner.id}`).then(res => {
+        res = JSON.parse(res);
+        if (res.length > 0) {
+          this.shadowRoot.querySelector('.notification-count').innerHTML = res.length;
+          this.shadowRoot.querySelector('.notification-all').style.display = "block";
+          this.shadowRoot.querySelector('.note-count').innerHTML = res.length;
+        } else {
+          this.shadowRoot.querySelector('.notification-count').style.display = "none";
+        }
+
+        let notes = "",
+          i = 1;
+        for (let note of res) {
+          if (i < 4) {
+            notes +=
+              `<div class="notifications"><div class="notification-desc">
               Approval needed for  <span class="bold">${note.campaignName}</span>  under <span class="bold">${note.categoryName}</span>  by  <span class="bold">${note.createdBy}</span>
             </div><div class="notification-footer"><span class="notifcation-time">
-              ${this.dateUtils(note.createdTime)} at ${this.getNoteTime(note.createdTime)}</span><span class="notifcation-detail"> <button>Review</button></span></div></div>`;
+              ${this.dateUtils(note.createdTime)} at ${this.getNoteTime(note.createdTime)}</span><span class="notifcation-detail"> <button class="review-btn" notes='${JSON.stringify(note)}' >Review</button></span></div></div>`;
+          }
+          i++;
         }
-        i++;
+
+        this.shadowRoot.querySelector('.notification-container').innerHTML = notes;
+
+      });
+      // .catch(err=>{console.log('error in fetch notification');});
+    }
+    getNoteTime(date) {
+      date = new Date(date);
+      return `${date.getHours()} : ${date.getMinutes()} ${date.getHours() > 11 ? 'PM':'AM'}`;
+
+    }
+    dateUtils1(date) {
+      var seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+      var interval = Math.floor(seconds / 31536000);
+      if (interval > 1) {
+        return interval + " years ago";
       }
 
-      this.shadowRoot.querySelector('.notification-container').innerHTML=notes;
-
-    });
-    // .catch(err=>{console.log('error in fetch notification');});
-  }
-  getNoteTime(date){
-    date=new Date(date);
-    return `${date.getHours()} : ${date.getMinutes()} ${date.getHours() > 11 ? 'PM':'AM'}`;
-
-  }
-  dateUtils1(date){
-    var seconds = Math.floor((new Date() - new Date(date)) / 1000);
-
-    var interval = Math.floor(seconds / 31536000);
-    if (interval > 1) {
-      return interval + " years ago";
-    }
-
-    interval = Math.floor(seconds / 2592000);
-    if (interval > 1) {
-      return interval + " months ago";
-    }
-
-    interval = Math.floor(seconds / 86400);
-    if (interval > 1) {
-      return interval + " days ago";
-    }
-
-    interval = Math.floor(seconds / 3600);
-    if (interval > 1) {
-      if(Math.floor(interval/24) ==  1 ){
-        return "Yesterday ";
-      }else if(Math.floor(interval/24) >  1 ){
-        return Math.floor(interval/24) + " days ago";
+      interval = Math.floor(seconds / 2592000);
+      if (interval > 1) {
+        return interval + " months ago";
       }
-      return interval + " hours ago";
-    }
 
-    interval = Math.floor(seconds / 60);
-    if (interval > 1) {
-      return interval + " minutes go";
-    }
-    return Math.floor(seconds) + " seconds";
-  
-  }
-  dateUtils(previous){
-    previous=new Date(previous);
-    let current=new Date();
+      interval = Math.floor(seconds / 86400);
+      if (interval > 1) {
+        return interval + " days ago";
+      }
 
-    var msPerMinute = 60 * 1000;
-    var msPerHour = msPerMinute * 60;
-    var msPerDay = msPerHour * 24;
-    var msPerMonth = msPerDay * 30;
-    var msPerYear = msPerDay * 365;
+      interval = Math.floor(seconds / 3600);
+      if (interval > 1) {
+        if (Math.floor(interval / 24) == 1) {
+          return "Yesterday ";
+        } else if (Math.floor(interval / 24) > 1) {
+          return Math.floor(interval / 24) + " days ago";
+        }
+        return interval + " hours ago";
+      }
 
-    var elapsed = current - previous;
+      interval = Math.floor(seconds / 60);
+      if (interval > 1) {
+        return interval + " minutes go";
+      }
+      return Math.floor(seconds) + " seconds";
 
-    if (elapsed < msPerMinute) {
-         return Math.round(elapsed/1000) + ' seconds ago';   
     }
-    else if (elapsed < msPerHour) {
-         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    dateUtils(previous) {
+      previous = new Date(previous);
+      let current = new Date();
+
+      var msPerMinute = 60 * 1000;
+      var msPerHour = msPerMinute * 60;
+      var msPerDay = msPerHour * 24;
+      var msPerMonth = msPerDay * 30;
+      var msPerYear = msPerDay * 365;
+
+      var elapsed = current - previous;
+
+      if (elapsed < msPerMinute) {
+        return Math.round(elapsed / 1000) + ' seconds ago';
+      } else if (elapsed < msPerHour) {
+        return Math.round(elapsed / msPerMinute) + ' minutes ago';
+      } else if (elapsed < msPerDay) {
+        return Math.round(elapsed / msPerHour) + ' hours ago';
+      } else if (elapsed < msPerMonth) {
+        return Math.round(elapsed / msPerDay) + ' days ago';
+      } else if (elapsed < msPerYear) {
+        return Math.round(elapsed / msPerMonth) + ' months ago';
+      } else {
+        return Math.round(elapsed / msPerYear) + ' years ago';
+      }
     }
-    else if (elapsed < msPerDay ) {
-         return Math.round(elapsed/msPerHour ) + ' hours ago';   
-    }
-    else if (elapsed < msPerMonth) {
-        return Math.round(elapsed/msPerDay) + ' days ago';   
-    }
-    else if (elapsed < msPerYear) {
-        return Math.round(elapsed/msPerMonth) + ' months ago';   
-    }
-    else {
-        return Math.round(elapsed/msPerYear ) + ' years ago';   
-    }
-  }
-  changePartner(url,id){
-    this.changePartnerCall(url+"/neon-ws/changePartner?partnerId="+id).then(res=>{
-        let changeVal=JSON.parse(res);
-        if(changeVal.partnerId== id){
-          this.shadowRoot.querySelector('.change-partner-background').style.display="none";
+    changePartner(url, id) {
+      this.changePartnerCall(url + "/neon-ws/changePartner?partnerId=" + id).then(res => {
+        let changeVal = JSON.parse(res);
+        if (changeVal.partnerId == id) {
+          this.shadowRoot.querySelector('.change-partner-background').style.display = "none";
           this.setPartners();
           console.log('chagned partner');
-        }else{
+        } else {
           console.log('error in change partner');
         }
-    }).catch(err=>{
-      this.shadowRoot.querySelector('.change-partner-background').style.display="none";
-      console.log('error in change partner');
-    });
-  }
+      }).catch(err => {
+        this.shadowRoot.querySelector('.change-partner-background').style.display = "none";
+        console.log('error in change partner');
+      });
+    }
 
-  changePartnerCall(url){
-    return new Promise(function (resolve, reject) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url);
-      xhr.onload = function () {
-        if (this.status >= 200 && this.status < 300) {
-          resolve(xhr.response);
-        } else { reject({status: this.status,statusText: xhr.statusText}); }
-      };
-      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
-      xhr.send();
-    });
-  }
+    changePartnerCall(url) {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send();
+      });
+    }
 
-  logout(url){
-    return new Promise((resolve,reject)=>{
-      let xhr=new XMLHttpRequest();
-      xhr.open('GET',url);
-      xhr.onload = function () {
-        if (this.status >= 200 && this.status < 300) {
-          resolve(xhr.response);
-        } else { reject({status: this.status,statusText: xhr.statusText}); }
-      };
-      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
-      xhr.send();
+    logout(url) {
+      return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send();
 
-    });
-  }
-  getIl10(){
-    this.callApi(this.url+"/l10n/data.en.properties").then(res=>{
-      sessionStorage.lang=res;
-      let lines=res.split("\n");
-      let hashCount=0;
-      let il10={};
-      for(let line of lines){
-        line=line.trim();
-        if(!line.trim().startsWith('#')){
-          il10[line.substring(0,line.indexOf('='))]=line.substring(line.indexOf('=')+1,line.length);
-        }else{
-          hashCount++;
+      });
+    }
+    getIl10() {
+      this.callApi(this.url + "/l10n/data.en.properties").then(res => {
+        sessionStorage.lang = res;
+        let lines = res.split("\n");
+        let hashCount = 0;
+        let il10 = {};
+        for (let line of lines) {
+          line = line.trim();
+          if (!line.trim().startsWith('#')) {
+            il10[line.substring(0, line.indexOf('='))] = line.substring(line.indexOf('=') + 1, line.length);
+          } else {
+            hashCount++;
+          }
         }
+        sessionStorage.setItem('il10', JSON.stringify(il10));
+      });
+    }
+    callApi(url) {
+      return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send();
+      });
+    }
+    goToApproval(entity) {
+      entity=JSON.parse(entity);
+      switch (entity.entityType) {
+        case 1:
+          //goto broadcasts
+          var type = entity.isRecurring ? 'recurring' : 'oneoff';
+          location.href='neon.html#/precision-marketer/life-cycle-marketing/' + entity.campaignId + '/broadcast/' +
+            entity.entityId + '/' + type + '/true';
+          break;
+        case 2:
+          //goto campaign
+          location.href ='neon.html#/precision-marketer/life-cycle-marketing/campaign/view/' + entity.entityId + '/true';
+          break;
       }
-      sessionStorage.setItem('il10',JSON.stringify(il10));
-    });
-  }
-  callApi(url){
-    return new Promise((resolve,reject)=>{
-      let xhr=new XMLHttpRequest();
-      xhr.open('GET',url);
-      xhr.onload = function () {
-        if (this.status >= 200 && this.status < 300) {
-          resolve(xhr.response);
-        } else { reject({status: this.status,statusText: xhr.statusText}); }
-      };
-      xhr.onerror = function () { reject({status: this.status,statusText: xhr.statusText}); };
-      xhr.send();
-    });
-  }
+    }
 
 
-});
+  });
 
 </script>

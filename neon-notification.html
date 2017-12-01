@@ -178,6 +178,12 @@ customElements.define('neon-notification', class extends HTMLElement{
         this.shadowRoot.querySelector('.content-container').innerHTML="No new notifications!";
       }
     });
+
+    this.shadowRoot.querySelector('.main-content').addEventListener('click', (e) => {
+      if (e.target.classList.contains('review-btn')) {
+        this.goToApproval(e.target.getAttribute('notes'));
+      }
+    });
   }
 
   setNotificationData(notes){
@@ -186,7 +192,7 @@ customElements.define('neon-notification', class extends HTMLElement{
       res +=`<div class="content-container"><div class="content"><div class="desc-title left">${this.getNoteTime(note.createdTime)}</div>
             <div class="desc-title right">
               Approval needed for  <strong>${note.campaignName}</strong>  under category  <strong>${note.categoryName}</strong>  by  <strong>${note.createdBy}</strong>
-            </div><div class="desc-title last"><button>Review</button></div></div></div>`;
+            </div><div class="desc-title last"><button class="review-btn" notes='${JSON.stringify(note)}' >Review</button></div></div></div>`;
     }
     this.shadowRoot.querySelector('.main-content').innerHTML=res;
 
@@ -215,6 +221,22 @@ customElements.define('neon-notification', class extends HTMLElement{
       date.getHours() > 11? 'PM':'AM';
     }
 
+  }
+
+  goToApproval(entity) {
+    entity = JSON.parse(entity);
+    switch (entity.entityType) {
+      case 1:
+        //goto broadcasts
+        var type = entity.isRecurring ? 'recurring' : 'oneoff';
+        location.href = 'neon.html#/precision-marketer/life-cycle-marketing/' + entity.campaignId + '/broadcast/' +
+          entity.entityId + '/' + type + '/true';
+        break;
+      case 2:
+        //goto campaign
+        location.href = 'neon.html#/precision-marketer/life-cycle-marketing/campaign/view/' + entity.entityId + '/true';
+        break;
+    }
   }
   callAPI(method,url,data){
     return new Promise((resolve,reject)=>{
