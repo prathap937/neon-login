@@ -110,7 +110,7 @@
           padding-right: 55px;
         }
         .user-name .drop-down{
-          top: -4px;
+          top: 0;
           position: absolute;
           right: 15px;
         }
@@ -398,10 +398,11 @@
             
             <div class="user-options flex-box">
               <div class="user-name">
-                <span class="user-drop"><span class="usrname">Naveen1 </span>
+                <span class="user-drop"><span class="usrname">Naveen11 </span>
                   <span class="drop-down">
 
-                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;width: 25px;" xml:space="preserve"><style type="text/css">.st0{fill:#657D89;}.st1{fill:#EF3A39;}.st2{fill:#1F2328;}.st3{fill:#C9C9C9;}.st4{fill:#010101;}.st5{fill:#59BA47;}.st6{fill:#F16464;}.st7{fill:#086699;}.st8{enable-background:new;}.st9{fill:#C9C9C9;enable-background:new;}.st10{fill:#62C195;}.st11{opacity:0;fill:#FFFFFF;}.st12{display:none;}.st13{display:inline;opacity:0.32;fill:#F05023;}</style><path class="st3" d="M18,8.75l-6,6.5l-6-6.5l1.51,0l4.49,0l4.49,0L18,8.75z"/><g><rect x="0" y="0" class="st11" width="24" height="24"/><rect x="0" y="0" class="st11" width="24" height="24"/><rect y="0" class="st11" width="24" height="24"/></g><g class="st12"><rect x="4" y="4" class="st13" width="16" height="16"/></g></svg>
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;width: 25px;" xml:space="preserve">
+                    <path style="fill:#fff;opacity:1;" d="M18,8.75l-6,6.5l-6-6.5l1.51,0l4.49,0l4.49,0L18,8.75z"/></svg>
                   </span>
                 </span>
                 <ul class="down">
@@ -713,6 +714,9 @@
               ${this.dateUtils(note.createdTime)} at ${this.getNoteTime(note.createdTime)}</span><span class="notifcation-detail"> <button class="review-btn" notes='${JSON.stringify(note)}' >Review</button></span></div></div>`;
           }
           i++;
+        }
+        if(notes.length < 10){
+          notes="No new notifications!";
         }
 
         this.shadowRoot.querySelector('.notification-container').innerHTML = notes;
