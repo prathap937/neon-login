@@ -858,21 +858,25 @@
       });
     }
     getIl10() {
-      this.callApi(this.url + "/l10n/data.en.properties").then(res => {
-        sessionStorage.lang = res;
-        let lines = res.split("\n");
-        let hashCount = 0;
-        let il10 = {};
-        for (let line of lines) {
-          line = line.trim();
-          if (!line.trim().startsWith('#')) {
-            il10[line.substring(0, line.indexOf('='))] = line.substring(line.indexOf('=') + 1, line.length);
-          } else {
-            hashCount++;
+      if(sessionStorage.getItem('il10') == null){
+        this.callApi(this.url + "/l10n/data.en.properties").then(res => {
+          sessionStorage.lang = res;
+          let lines = res.split("\n");
+          let hashCount = 0;
+          let il10 = {};
+          for (let line of lines) {
+            line = line.trim();
+            if (!line.trim().startsWith('#')) {
+              il10[line.substring(0, line.indexOf('='))] = line.substring(line.indexOf('=') + 1, line.length);
+            } else {
+              hashCount++;
+            }
           }
-        }
-        sessionStorage.setItem('il10', JSON.stringify(il10));
-      });
+          sessionStorage.setItem('il10', JSON.stringify(il10));
+        });
+      }else{
+        /* il10 is set in login */
+      }
     }
     callApi(url) {
       return new Promise((resolve, reject) => {
