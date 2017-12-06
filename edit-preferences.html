@@ -176,32 +176,47 @@ customElements.define('edit-preferences', class extends HTMLElement{
           width: 25px !important;
           height: 25px !important;
         }
+        .error-box {
+          position: fixed;
+          left: 35px;
+          bottom: -30px;
+          padding: 20px;
+          color: #fff;
+          background: #000;
+          border-radius: 3px;
+          transition:0.3s all;
+          visibility:hidden;
+        }
+        .error-box.show{
+          bottom: 40px;
+          visibility:visible;
+        } 
       </style>
 
       <div class="edit-preferences">
         <div class="edit-preferences-background">
           <section class="edit-preferences">
-            <header><strong>Preferences</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></span></header>
+            <header><strong>${this.webL10n('platform-setting.preferences')}</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></span></header>
             <hr>
             <main>
               <div class="form-groub-checkbox">
                 <div>
-                <label for="rememberMe" class="rememberMe">Show Clock On Screen</label>
-                <input type="radio" id="showClock" name="showClock" value="yes" checked> <label for="showClock" class="show-clock">Yes</label>
-                <input type="radio" id="showClock1" name="showClock" value="no"> <label for="showClock1" class="show-clock">No</label>
+                <label for="rememberMe" class="rememberMe">${this.webL10n('platform-setting.showclockmsg')}</label>
+                <input type="radio" id="showClock" name="showClock" value="yes" checked> <label for="showClock" class="show-clock">${this.webL10n('common.yes') || 'Yes'}</label>
+                <input type="radio" id="showClock1" name="showClock" value="no"> <label for="showClock1" class="show-clock">${this.webL10n('common.no')}</label>
                 </div>
               </div>
               <div class="form-groub w50l">
                 <input type="text" id="preferedpartner" class="has-value" list="preferedpartnerList">
-                <label for="preferedpartner">Prefered Partner</label>
-                <span class="err preferedpartner" style="display:none">Prefered Partner</span>
+                <label for="preferedpartner">${this.webL10n('platform-setting.preferedpartner')}</label>
+                <span class="err preferedpartner" style="display:none">Invalid ${this.webL10n('platform-setting.preferedpartner')}</span>
                 <datalist id="preferedpartnerList"></datalist>
               </div> 
               <div class="form-groub-checkbox">
                 <div>
-                  <label for="rememberMe" class="rememberMe">Preferred Home Page</label>
-                  <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> Default</label>
-                  <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> Specific Page</label>
+                  <label for="rememberMe" class="rememberMe">${this.webL10n('platform-setting.showclockmsg')}</label>
+                  <input type="radio" id="homePage" name="homePage" value="yes" checked><label for="homePage" class="show-clock"> ${this.webL10n('variable.default')}</label>
+                  <input type="radio" id="homePage1" name="homePage" value="no"><label for="homePage1" class="show-clock"> ${this.webL10n('platform-setting.preferedpartnerhome')}</label>
                   <span class="selected-page">(Please select the page)</span>
                 </div>
                 <div class="page-container">
@@ -212,14 +227,18 @@ customElements.define('edit-preferences', class extends HTMLElement{
             <hr>
             <footer> 
               <div class="action-btn">
-                <button class="editpreferencesCancel cancel jsclose">Cancel</button>
-                <button class="editpreferencesSave">Save</button>
+                <button class="editpreferencesCancel cancel jsclose">${this.webL10n('common.cancel')}</button>
+                <button class="editpreferencesSave">${this.webL10n('common.save')}</button>
               </div>
             </footer>
           </section>
         </div>
         
       </div>
+      <div class="error-box">
+        Saved.
+      </div>
+      
     `;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -361,6 +380,11 @@ customElements.define('edit-preferences', class extends HTMLElement{
       };
       this.callAPI('POST',this.url+"/neon-ws/saveUserPreference",JSON.stringify(data)).then(res=>{
         console.log('success');
+        // this.shadowRoot.querySelector('.error-box').innerHTML = this.webL10n('platform-setting.profileSaved');
+        // this.shadowRoot.querySelector('.error-box').classList.add('show');
+        // setTimeout(() => {
+        //   this.shadowRoot.querySelector('.error-box').classList.remove('show');
+        // }, 3000)
         this.removeAttribute('show');
       }).catch(err=>{
         console.error('error in show preferences');
@@ -426,7 +450,20 @@ customElements.define('edit-preferences', class extends HTMLElement{
     }
     this.shadowRoot.querySelector('#preferedpartnerList').innerHTML=options;
   }
-
+  webL10n(key) {
+    if (sessionStorage.getItem('il10') != null) {
+      let il10 = JSON.parse(sessionStorage.getItem('il10'));
+      if (il10[key]) {
+        return il10[key];
+      } else {
+        console.log(key, 'key not found!');
+        return false;
+      }
+    } else {
+      console.log(key, 'session il10 not found!');
+      return key;
+    }
+  }
   callAPI(method,url,data){
     return new Promise((resolve,reject)=>{
       let xhr=new XMLHttpRequest();

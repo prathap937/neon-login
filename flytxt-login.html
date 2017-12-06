@@ -2,7 +2,7 @@
 customElements.define('flytxt-login', class extends HTMLElement{
   constructor(){
     super();
-  
+    this.getIl10();/* get data.en */
     const template = document.createElement('template');
     template.innerHTML = ` 
       <style>
@@ -283,8 +283,6 @@ customElements.define('flytxt-login', class extends HTMLElement{
         this.checkValidation();
       });
     });
-
-    this.getIl10();/* get data.en */
     
   }
   checkValidation(){

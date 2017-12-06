@@ -112,51 +112,66 @@ customElements.define('edit-profile', class extends HTMLElement{
         .close svg{
           width: 25px !important;
           height: 25px !important;
-        }      
-  
+        } 
+        .error-box {
+          position: fixed;
+          left: 35px;
+          bottom: -30px;
+          padding: 20px;
+          color: #fff;
+          background: #000;
+          border-radius: 3px;
+          transition:0.3s all;
+          visibility:hidden;
+          z-index:5;
+        }
+        .error-box.show{
+          bottom: 40px;
+          visibility:visible;
+        }     
       </style>
       
       <div class="edit-profile-background">
         <section class="edit-profile">
-          <header><strong>Profile</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></span></header>
+          <header><strong>${this.webL10n('platform-setting.editProfile')}</strong><span class="close jsclose"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="style-scope iron-icon"></path></g></svg></span></header>
           <hr>
           <main>
             <div class="form-groub w50l">
               <input type="text" id="firstName" class="has-value" >
-              <label for="firstName">First Name</label>
-              <span class="err firstName" style="display:none">Invalid First Name</span>
+              <label for="firstName">${this.webL10n('common.firstName')}</label>
+              <span class="err firstName" style="display:none">Invalid ${this.webL10n('common.firstName')}</span>
             </div> 
             <div class="form-groub w50r">
               <input type="text" id="lastName" class="has-value" >
-              <label for="lastName">Last Name</label>
-              <span class="err lastName" style="display:none">Invalid Last Name</span>
+              <label for="lastName">${this.webL10n('common.lastName')}</label>
+              <span class="err lastName" style="display:none">Invalid ${this.webL10n('common.lastName')}</span>
             </div> 
             <div class="form-groub clearfloat">
               <input type="text" id="email" class="has-value" >
-              <label for="email">Email</label>
-              <span class="err email" style="display:none">Invalid Email</span>
+              <label for="email">${this.webL10n('common.emailAddress')}</label>
+              <span class="err email" style="display:none">Invalid ${this.webL10n('common.emailAddress')}</span>
             </div> 
             <div class="form-groub">
               <input type="text" id="phone" class="has-value" >
-              <label for="phone">Phone</label>
-              <span class="err phone" style="display:none">Invalid Phone</span>
+              <label for="phone">${this.webL10n('common.workPhone')} </label>
+              <span class="err phone" style="display:none">Invalid ${this.webL10n('common.workPhone')} </span>
             </div> 
             <div class="form-groub">
               <input type="text" id="webLanguageId" list="webLanguageIdList" class="has-value" >
-              <label for="webLanguageId">Language</label>
-              <span class="err webLanguageId" style="display:none">Invalid Language</span>
+              <label for="webLanguageId">${this.webL10n('common.selLanguage')}</label>
+              <span class="err webLanguageId" style="display:none">Invalid ${this.webL10n('common.selLanguage')}</span>
               <datalist id="webLanguageIdList"></datalist>
             </div> 
             <div class="form-groub">
               <input type="text" id="timezone" list="timezoneList" class="has-value" >
-              <label for="timezone">Timezone</label>
-              <span class="err timezone" style="display:none">Invalid timezone</span>
+              <label for="timezone">${this.webL10n('variable.timeZone')}</label>
+              <span class="err timezone" style="display:none">Invalid ${this.webL10n('variable.timeZone')}</span>
               <datalist id="timezoneList"></datalist>
             </div> 
             <div class="form-groub">
               <input type="text" id="localeId" list="localeIdList" class="has-value" >
-              <label for="localeId">Locale</label>
-              <span class="err localeId" style="display:none">Invalid locale</span>
+              <label for="localeId">${this.webL10n('common.locale')}</label>
+              <span class="err localeId" style="display:none">Invalid ${this.webL10n('common.locale')}</span>
               <datalist id="localeIdList"></datalist>
             </div> 
 
@@ -164,12 +179,16 @@ customElements.define('edit-profile', class extends HTMLElement{
           <hr>
           <footer> 
             <div class="action-btn">
-              <button class="editProfileCancel jsclose">Cancel</button>
-              <button class="editProfileSave">Save</button>
+              <button class="editProfileCancel jsclose">${this.webL10n('common.cancel')}</button>
+              <button class="editProfileSave">${this.webL10n('common.save')}</button>
             </div>
           </footer>
         </section>
       </div>
+      <div class="error-box">
+          Saved.
+      </div>
+      
     `;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -208,13 +227,21 @@ customElements.define('edit-profile', class extends HTMLElement{
           firstName:valid.firstName,
           lastName:valid.lastName,
           phone:valid.phone,
-          localeId:valid.localeId,
+          localeId:parseInt(valid.localeId),
           timezoneId:valid.timezoneId,
           webLanguageId:valid.webLanguageId,
           userId:this.data.id
         }).then(res=>{
-          console.log('success');
+          // console.log('success');
+          // this.shadowRoot.querySelector('.error-box').innerHTML = this.webL10n('platform-setting.profileSaved');
+          // this.shadowRoot.querySelector('.error-box').classList.add('show');
+          // setTimeout(() => {
+          //   this.shadowRoot.querySelector('.error-box').classList.remove('show');
+          // }, 3000);
           this.removeAttribute('show');
+          this.data.localeId= parseInt(valid.localeId); //to get value from menu click
+          // platform - setting.profileSaved
+
         }).catch(err=>{
           console.error('error in show profile');
           this.removeAttribute('show');
@@ -316,17 +343,24 @@ customElements.define('edit-profile', class extends HTMLElement{
       this.getUserData(this.url+"/neon-ws/locales/?size=100"),
       this.getUserData(this.url+"/neon-ws/locales/"+this.data.localeId+"/?size=100"),
       ]).then(res=>{
+        let userId=this.data.id;
+        this.data= JSON.parse(res[0]);
+        this.data.id=userId;
         this.shadowRoot.querySelector('#firstName').value=JSON.parse(res[0]).firstName;
         this.shadowRoot.querySelector('#lastName').value=JSON.parse(res[0]).lastName;
         this.shadowRoot.querySelector('#email').value=JSON.parse(res[0]).emailAddress;
         this.shadowRoot.querySelector('#phone').value=JSON.parse(res[0]).phoneMobile;
         this.shadowRoot.querySelector('#webLanguageId').value=JSON.parse(res[1]).name;
         this.shadowRoot.querySelector('#timezone').value=JSON.parse(res[2]).description;
-        this.shadowRoot.querySelector('#localeId').value=JSON.parse(res[5])._embedded.locales.find(item => item.language == JSON.parse(res[6]).language).localeName;
+        this.shadowRoot.querySelector('#localeId').value= JSON.parse(res[5])._embedded.locales.find(item => item.language == JSON.parse(res[6]).language).localeName;
         this.setTimezoneList(JSON.parse(res[3])._embedded.timeZones);
         this.setWebLanguageList(JSON.parse(res[4])._embedded.webLanguages);
         this.setWebLocaleList(JSON.parse(res[5])._embedded.locales);
       });
+  }
+
+  setLocaleName(locales){
+    JSON.parse(res[5])._embedded.locales.find(item => item.language == JSON.parse(res[6]).language).localeName;
   }
 
   getSelectedTimezoneId(){
@@ -379,11 +413,25 @@ customElements.define('edit-profile', class extends HTMLElement{
     this.localesList=locales;
     let li="";
     locales.forEach(l=>{
-      li+=`<option value="${l.localeName}">`; 
+      li+=`<option value="${l.localeName}" >`; 
     });
     this.shadowRoot.querySelector('#localeIdList').innerHTML=li;
   }
 
+  webL10n(key) {
+    if (sessionStorage.getItem('il10') != null) {
+      let il10 = JSON.parse(sessionStorage.getItem('il10'));
+      if (il10[key]) {
+        return il10[key];
+      } else {
+        console.log(key, 'key not found!');
+        return key;
+      }
+    } else {
+      console.log(key, 'session il10 not found!');
+      return key;
+    }
+  }
   getUserData(url){
     return new Promise((resolve,reject)=>{
       let xhr=new XMLHttpRequest();
