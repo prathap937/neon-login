@@ -310,6 +310,10 @@ customElements.define('flytxt-login', class extends HTMLElement{
       this.shadowRoot.querySelector('.err.password').style.display="none";
     }
 
+    if(username.value.length < 4 || password.value.length < 4 ){
+      err++;
+    }
+
     if(err==0){
       this.shadowRoot.querySelector('#login-submit').disabled=false;
       this.shadowRoot.querySelector('#login-submit').className="enable";
@@ -400,7 +404,7 @@ customElements.define('flytxt-login', class extends HTMLElement{
   }
 
   getIl10() {
-    this.callApi(this.url + "/l10n/data.en.properties").then(res => {
+    this.callApi(location.origin + "/l10n/data.en.properties").then(res => {
       sessionStorage.lang = res;
       let lines = res.split("\n");
       let hashCount = 0;
