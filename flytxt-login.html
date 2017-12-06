@@ -283,6 +283,8 @@ customElements.define('flytxt-login', class extends HTMLElement{
         this.checkValidation();
       });
     });
+
+    this.getIl10();/* get data.en */
     
   }
   checkValidation(){
@@ -394,6 +396,47 @@ customElements.define('flytxt-login', class extends HTMLElement{
         });
       };
       xhr.send(`username=${username}&password=${password}&remember-me=${rememberMe}`);
+    });
+  }
+
+  getIl10() {
+    this.callApi(this.url + "/l10n/data.en.properties").then(res => {
+      sessionStorage.lang = res;
+      let lines = res.split("\n");
+      let hashCount = 0;
+      let il10 = {};
+      for (let line of lines) {
+        line = line.trim();
+        if (!line.trim().startsWith('#')) {
+          il10[line.substring(0, line.indexOf('='))] = line.substring(line.indexOf('=') + 1, line.length);
+        } else {
+          hashCount++;
+        }
+      }
+      sessionStorage.setItem('il10', JSON.stringify(il10));
+    });
+  }
+  callApi(url) {
+    return new Promise((resolve, reject) => {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(xhr.response);
+        } else {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        }
+      };
+      xhr.onerror = function () {
+        reject({
+          status: this.status,
+          statusText: xhr.statusText
+        });
+      };
+      xhr.send();
     });
   }
 
