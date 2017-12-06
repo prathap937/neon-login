@@ -186,7 +186,7 @@ customElements.define('edit-profile', class extends HTMLElement{
   }
   
   connectedCallback(){ 
-    // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+    if(!sessionStorage.getItem('login_response')) location.href="/index.html";
 
     this.data=JSON.parse(sessionStorage.getItem('login_response'));
     this.url=location.origin;

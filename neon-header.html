@@ -508,7 +508,7 @@
     }
 
     connectedCallback() {
-      // if(!sessionStorage.getItem('login_response')) location.href="/index.html";
+      if(!sessionStorage.getItem('login_response')) location.href="/index.html";
       if (location.pathname.indexOf('launch.html')) this.shadowRoot.querySelector('.logo a').href = "#";
 
       this.data = JSON.parse(sessionStorage.getItem('login_response'));
