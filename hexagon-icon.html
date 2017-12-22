@@ -34,7 +34,6 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     margin: 0 auto;
   }
   .header-info{
-    position: absolu+e;
     top: 119px;
     font-size: 0.8em;
     color: #fff;
@@ -49,7 +48,7 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     transition:opacity 1s linear;
   }
 
-  .background-icon:hover + .header-info{
+  .background-icon + .header-info{
     visibility: visible;
     transition-delay:.5s;
     opacity: 1;
@@ -150,6 +149,8 @@ customElements.define('hexagon-icon', class extends HTMLElement{
     }
     if(iconLogoImage && iconLogoImage.length > 2){
       this.shadowRoot.querySelector('.icon-img').innerHTML=iconLogoImage;
+    }else{
+      this.shadowRoot.querySelector('.icon-img').style.display = "none";
     }
     if(title && title.length > 0){
       this.shadowRoot.querySelector('.title').innerHTML=title;

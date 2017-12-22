@@ -1,8 +1,12 @@
 <script>
-customElements.define('flytxt-login', class extends HTMLElement{
+customElements.define('neon-login', class extends HTMLElement{
   constructor(){
     super();
     this.getIl10();/* get data.en */
+    
+    
+  }
+  template(lang){
     const template = document.createElement('template');
     template.innerHTML = ` 
       <style>
@@ -200,6 +204,10 @@ customElements.define('flytxt-login', class extends HTMLElement{
         .pb0{
           padding-bottom:20px !important;
         }
+        .remember-label{
+          cursor:pointer;
+          user-select:none;
+        }
       </style>
 
       <div class="login">
@@ -231,44 +239,41 @@ customElements.define('flytxt-login', class extends HTMLElement{
           <form class="neon-login">
             <div class="form-groub">
               <input type="text" id="username" value="" >
-              <label for="username">Username</label>
-              <span class="err username" style="display:none">Invalid Username</span>
+              <label for="username">${lang['login.username']}</label>
             </div>  
             <div class="form-groub pb0">
               <input type="password" id="password" value="">
-              <label for="password">Password</label>
-              <span class="err password" style="display:none">Invalid Username</span>
+              <label for="password">${lang['login.password']}</label>
             </div>
             <div class="form-groub-checkbox">
               <div>
-              <input type="checkbox" id="remeberMe" checked> <label for="rememberMe">Remember Me</label>
+              <input type="checkbox" id="rememberMe"> <label for="rememberMe" class="remember-label">${lang['login.rememberme']}</label>
               </div>
             </div>
             <div class="form-groub-submit">
-              <button id="login-submit" type="submit" disabled>Sign In 
+              <button id="login-submit" type="submit" disabled>${lang['login.button']}
                 <span class="white"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="15.068" viewBox="0 0 36 15.068"><path fill="#FFF" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#FFF" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#FFF" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#FFF" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
                 <span class="yellow"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="15.068" viewBox="0 0 36 15.068"><path fill="#F8A02B" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="none" d="M14.785 15.014l5.556.017 8.361-7.695L20.377 0h-5.556l8.972 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="none" d="M22.084 15.014l5.575.017 8.342-7.695L27.695 0H22.14l8.971 7.372-9.027 7.642z"/><path fill="#F8A02B" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="none" d="M.113 15.014l5.555.017 8.362-7.695L5.704 0H.148l8.973 7.372-9.008 7.642z"/><path fill="#F8A02B" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M7.413 15.014l5.574.017 8.344-7.695L13.023 0H7.467l8.972 7.372-9.026 7.642z"/><path fill="none" d="M.113 15.068h35.924V.018H.113v15.05z"/></svg></span>
               </button>
-              <span class="err login" style="display:none">Invalid Username/Password</span>
             </div>
           </form>
           <div class="form-groub-forgot">
-            <a class="forgot-password">Forgot Password</a>
+            <a class="forgot-password">${lang['login.forgotPassword']}</a>
           </div>
         </div>
         <div class="forgot-modal-background">
           <div class="forgot-modal">
-            <div class="modal-header">The system will reset your password and send the new password to the registered email ID. Do you want to continue?</div>
+            <div class="modal-header">${lang['login.confirmMsg']}</div>
             <div class="modal-footer">
               <div class="action-btn">
-                <button class="no">No</button>
-                <button class="yes">Yes</button>
+                <button class="no">${lang['common.no']}</button>
+                <button class="yes">${lang['common.yes']}</button>
               </div>
             </div>
           </div>
         </div>
         <div class="error-box">
-          Please provide valid username.
+          ${lang['login.noEmail']}
         </div>
       </div>
     `;
@@ -285,32 +290,32 @@ customElements.define('flytxt-login', class extends HTMLElement{
         this.checkValidation();
       });
     });
-    
+    this.templateCallback();
   }
   checkValidation(){
     let username=this.shadowRoot.querySelector("#username");
     let password=this.shadowRoot.querySelector("#password");
-    let rememberMe=this.shadowRoot.querySelector("#remeberMe");
+    let rememberMe=this.shadowRoot.querySelector("#rememberMe");
 
     //has value check
     if(username.value.length > 0) username.classList.add('has-value'); else username.classList.remove('has-value');
     if(password.value.length > 0) password.classList.add('has-value'); else password.classList.remove('has-value');
 
     let err=0;
-    if(username.value.length < 4 && this.usernameClicked > 0){
-      this.shadowRoot.querySelector('.err.username').style.display="block";
-      err++;
-    }else{
-      this.shadowRoot.querySelector('.err.username').style.display="none";
-    }
-    if(password.value.length < 4 && this.passwordClicked > 0){
-      this.shadowRoot.querySelector('.err.password').style.display="block";
-      err++;
-    }else{
-      this.shadowRoot.querySelector('.err.password').style.display="none";
-    }
+    // if(username.value.length < 4 && this.usernameClicked > 0){
+    //   this.shadowRoot.querySelector('.err.username').style.display="block";
+    //   err++;
+    // }else{
+    //   this.shadowRoot.querySelector('.err.username').style.display="none";
+    // }
+    // if(password.value.length < 4 && this.passwordClicked > 0){
+    //   this.shadowRoot.querySelector('.err.password').style.display="block";
+    //   err++;
+    // }else{
+    //   this.shadowRoot.querySelector('.err.password').style.display="none";
+    // }
 
-    if(username.value.length < 4 || password.value.length < 4 ){
+    if(!username.value.length || !password.value.length ){
       err++;
     }
 
@@ -325,7 +330,16 @@ customElements.define('flytxt-login', class extends HTMLElement{
     }
 
   }
-  connectedCallback(){
+  showMessages(message){
+    let element = this.shadowRoot.querySelector('.error-box');
+    element.innerHTML = message;
+    element.classList.add('show');
+        setTimeout(()=>{
+          element.classList.remove('show');
+          // element.innerHTML = '';
+        },3000);
+  }
+  templateCallback(){
     this.usernameClicked=0;
     this.passwordClicked=0;
     // this.checkValidation();
@@ -370,14 +384,13 @@ customElements.define('flytxt-login', class extends HTMLElement{
           sessionStorage.setItem('login_response', res ? res : false);
           var res = JSON.parse(res);
           if (res.preferences.landingPage && res.preferences.landingPage != "" && res.preferences.landingPage != "/") {
-            location.href = location.origin + "/neon.html#" + res.preferences.landingPage;
+            location.href = location.origin + "/#" + res.preferences.landingPage;
             return;
           }
-          this.shadowRoot.querySelector('.err.login').style.display = "none";
           location.href = this.getAttribute('redirect-url') || '/index.html';
         })
         .catch((e) => {
-          this.shadowRoot.querySelector('.err.login').style.display = "block";
+          this.showMessages(e.response.msg);
         })
     }
     return false;
@@ -397,7 +410,8 @@ customElements.define('flytxt-login', class extends HTMLElement{
         } else {
           reject({
             status: this.status,
-            statusText: xhr.statusText
+            statusText: xhr.statusText,
+            response:JSON.parse(xhr.response) || {}
           });
         }
       };
@@ -413,19 +427,13 @@ customElements.define('flytxt-login', class extends HTMLElement{
 
   getIl10() {
     this.callApi(location.origin + "/l10n/data.en.properties").then(res => {
-      sessionStorage.lang = res;
-      let lines = res.split("\n");
-      let hashCount = 0;
-      let il10 = {};
-      for (let line of lines) {
-        line = line.trim();
-        if (!line.trim().startsWith('#')) {
-          il10[line.substring(0, line.indexOf('='))] = line.substring(line.indexOf('=') + 1, line.length);
-        } else {
-          hashCount++;
-        }
+      var regex = /(([^#\n].*)[.].*)[=](.*)(\n?)/g;
+      var matches = {};
+      var match;
+      while (match =regex.exec(res)){
+       matches[match[1]] = match[3]
       }
-      sessionStorage.setItem('il10', JSON.stringify(il10));
+      this.template(matches);
     });
   }
   callApi(url) {
